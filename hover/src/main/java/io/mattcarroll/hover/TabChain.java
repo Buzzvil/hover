@@ -113,7 +113,7 @@ class TabChain {
                 mTab.dock();
             }
         } else {
-            mTab.moveTo(mTab.getDockPosition());
+            mTab.dockImmediately();
             mTab.appear(null);
         }
     }
