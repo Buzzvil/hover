@@ -201,9 +201,13 @@ class FloatingTab extends FrameLayout {
         mTabContentView = tabContentView;
     }
 
-    public void showTabContentView() {
+    public void showTabContentView(SideDock dock) {
         if (mTabContentView != null) {
-            addView(mTabContentView);
+            if (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT) {
+                addView(mTabContentView);
+            } else {
+                addView(mTabContentView, 0);
+            }
         }
     }
 
