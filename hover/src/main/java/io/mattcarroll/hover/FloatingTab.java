@@ -201,12 +201,24 @@ class FloatingTab extends FrameLayout {
         mTabContentView = tabContentView;
     }
 
+    public void showTabContentView() {
+        if (mTabContentView != null) {
+            addView(mTabContentView);
+        }
+    }
+
+    public void hideTabContentView() {
+        if (mTabContentView != null) {
+            removeView(mTabContentView);
+        }
+    }
+
     // Returns the center position of this tab.
     @NonNull
     public Point getPosition() {
         return new Point(
-                (int) (getX() + (getTabSize() / 2)),
-                (int) (getY() + (getTabSize() / 2))
+                (int) (getX() + (getWidth() / 2)),
+                (int) (getY() + (getHeight() / 2))
         );
     }
 

@@ -17,7 +17,6 @@ package io.mattcarroll.hover;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.View;
 
 /**
  * {@link HoverViewState} that operates the {@link HoverView} when it is closed. Closed means that
@@ -28,16 +27,16 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
 
     private static final String TAG = "HoverViewStatePreviewed";
 
-    private View mTabContentView;
-
     @Override
     public void takeControl(@NonNull HoverView hoverView) {
         super.takeControl(hoverView);
         mHoverView.mState = this;
+        mFloatingTab.showTabContentView();
     }
 
     @Override
     protected void changeState(@NonNull HoverViewState nextState) {
+        mFloatingTab.hideTabContentView();
         super.changeState(nextState);
     }
 
