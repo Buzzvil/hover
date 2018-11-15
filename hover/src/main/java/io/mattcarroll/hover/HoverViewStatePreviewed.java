@@ -15,8 +15,11 @@
  */
 package io.mattcarroll.hover;
 
+import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
+
+import static android.view.View.GONE;
 
 /**
  * {@link HoverViewState} that operates the {@link HoverView} when it is closed. Closed means that
@@ -38,6 +41,46 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     protected void changeState(@NonNull HoverViewState nextState) {
         mFloatingTab.hideTabContentView();
         super.changeState(nextState);
+    }
+
+    @Override
+    protected void onDroppedByUser() {
+        mHoverView.mScreen.getExitView().setVisibility(GONE);
+        if (null != mListener) {
+            mListener.onDragEnd();
+        }
+
+        boolean droppedOnExit = mHoverView.mScreen.getExitView().isInExitZone(mFloatingTab.getPosition());
+        if (droppedOnExit) {
+            Log.d(TAG, "User dropped floating tab on exit.");
+            closeMenu(new Runnable() {
+                @Override
+                public void run() {
+                    if (null != mHoverView.mOnExitListener) {
+                        mHoverView.mOnExitListener.onExit();
+                    }
+                }
+            });
+        } else {
+            int tabSize = mHoverView.getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
+            Point screenSize = new Point(mHoverView.mScreen.getWidth(), mHoverView.mScreen.getHeight());
+            float tabVerticalPosition = (float) mFloatingTab.getPosition().y / screenSize.y;
+            @SideDock.SidePosition.Side
+            final int previousSide = mHoverView.mCollapsedDock.sidePosition().getSide();
+            SideDock.SidePosition sidePosition = new SideDock.SidePosition(
+                    previousSide,
+                    tabVerticalPosition
+            );
+            mHoverView.mCollapsedDock = new SideDock(
+                    mHoverView,
+                    tabSize,
+                    sidePosition
+            );
+            mHoverView.saveVisualState();
+            Log.d(TAG, "User dropped tab. Sending to new dock: " + mHoverView.mCollapsedDock);
+
+            sendToDock();
+        }
     }
 
     @Override
