@@ -25,10 +25,11 @@ import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -45,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * {@code FloatingTab}s position themselves based on their center.
  */
-class FloatingTab extends FrameLayout {
+class FloatingTab extends LinearLayout {
 
     private static final String TAG = "FloatingTab";
 
@@ -67,21 +68,12 @@ class FloatingTab extends FrameLayout {
         super(context);
         mId = tabId;
         mTabSize = getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
-
-        int padding = getResources().getDimensionPixelSize(R.dimen.hover_tab_margin);
-        setPadding(padding, padding, padding, padding);
+        setGravity(Gravity.CENTER_VERTICAL);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-
-        // Make this View the desired size.
-        ViewGroup.LayoutParams layoutParams = getLayoutParams();
-        layoutParams.width = mTabSize;
-        layoutParams.height = mTabSize;
-        setLayoutParams(layoutParams);
-
         addOnLayoutChangeListener(mOnLayoutChangeListener);
     }
 
@@ -189,10 +181,9 @@ class FloatingTab extends FrameLayout {
 
         mTabView = view;
         if (null != mTabView) {
-            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT
-            );
+            ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(mTabSize, mTabSize);
+            final int padding = getResources().getDimensionPixelSize(R.dimen.hover_tab_margin);
+            mTabView.setPadding(padding, padding, padding, padding);
             addView(mTabView, layoutParams);
         }
     }
