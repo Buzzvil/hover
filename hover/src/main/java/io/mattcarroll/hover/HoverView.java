@@ -85,6 +85,7 @@ public class HoverView extends RelativeLayout {
 
     final HoverViewState mClosed = new HoverViewStateClosed();
     final HoverViewState mCollapsed = new HoverViewStateCollapsed();
+    final HoverViewState mPreviewed = new HoverViewStatePreviewed();
     final HoverViewState mExpanded = new HoverViewStateExpanded();
     final WindowViewController mWindowViewController;
     final Dragger mDragger;
@@ -253,6 +254,10 @@ public class HoverView extends RelativeLayout {
 
     public void setMenu(@Nullable HoverMenu menu) {
         mState.setMenu(menu);
+    }
+
+    public void preview() {
+        mState.preview();
     }
 
     public void expand() {

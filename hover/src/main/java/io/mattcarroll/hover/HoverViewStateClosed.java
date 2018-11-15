@@ -76,6 +76,16 @@ class HoverViewStateClosed extends BaseHoverViewState {
     }
 
     @Override
+    public void preview() {
+        if (null != mHoverView.mMenu) {
+            Log.d(TAG, "Preview.");
+            changeState(mHoverView.mPreviewed);
+        } else {
+            Log.d(TAG, "Asked to preview, but there is no menu set. Can't preview until a menu is available.");
+        }
+    }
+
+    @Override
     public void expand() {
         if (null != mHoverView.mMenu) {
             Log.d(TAG, "Expanding.");

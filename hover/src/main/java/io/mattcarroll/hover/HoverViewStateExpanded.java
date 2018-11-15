@@ -199,6 +199,11 @@ class HoverViewStateExpanded extends BaseHoverViewState {
     }
 
     @Override
+    public void preview() {
+        changeState(mHoverView.mPreviewed);
+    }
+
+    @Override
     public void expand() {
         Log.d(TAG, "Instructed to expand, but already expanded.");
     }
