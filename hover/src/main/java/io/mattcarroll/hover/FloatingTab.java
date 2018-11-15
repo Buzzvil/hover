@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.LinearLayout;
 
@@ -49,6 +50,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 class FloatingTab extends LinearLayout {
 
     private static final String TAG = "FloatingTab";
+    private static final int APPREARING_ANIMATION_DURATION = 300;
 
     private final String mId;
     private int mTabSize;
@@ -94,9 +96,11 @@ class FloatingTab extends LinearLayout {
     public void appear(@Nullable final Runnable onAppeared) {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f, 1.0f);
-        scaleX.setDuration(250);
+        scaleX.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleX.setInterpolator(new DecelerateInterpolator());
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f, 1.0f);
-        scaleY.setDuration(250);
+        scaleY.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleY.setInterpolator(new DecelerateInterpolator());
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
 
@@ -131,9 +135,9 @@ class FloatingTab extends LinearLayout {
     public void disappear(@Nullable final Runnable onDisappeared) {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f);
-        scaleX.setDuration(250);
+        scaleX.setDuration(APPREARING_ANIMATION_DURATION);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f);
-        scaleY.setDuration(250);
+        scaleY.setDuration(APPREARING_ANIMATION_DURATION);
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
 
