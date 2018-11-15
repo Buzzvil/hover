@@ -39,8 +39,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
     private static final String TAG = "HoverViewStateCollapsed";
 
-    private HoverView mHoverView;
-    private FloatingTab mFloatingTab;
+    protected HoverView mHoverView;
+    protected FloatingTab mFloatingTab;
     private HoverMenu.Section mSelectedSection;
     private int mSelectedSectionIndex = -1;
     private boolean mHasControl = false;
@@ -129,6 +129,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     }
 
     @Override
+    public void preview() {
+        changeState(mHoverView.mPreviewed);
+    }
+
+    @Override
     public void expand() {
         changeState(mHoverView.mExpanded);
     }
@@ -143,7 +148,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         changeState(mHoverView.mClosed);
     }
 
-    private void changeState(@NonNull HoverViewState nextState) {
+    protected void changeState(@NonNull HoverViewState nextState) {
         Log.d(TAG, "Giving up control.");
         if (!mHasControl) {
             throw new RuntimeException("Cannot give control to another HoverMenuController when we don't have the HoverTab.");
@@ -244,7 +249,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mListener = listener;
     }
 
-    private void onPickedUpByUser() {
+    protected void onPickedUpByUser() {
         mIsDocked = false;
         mHoverView.mScreen.getExitView().setVisibility(VISIBLE);
         if (null != mListener) {
@@ -252,7 +257,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void onDroppedByUser() {
+    protected void onDroppedByUser() {
         mHoverView.mScreen.getExitView().setVisibility(GONE);
         if (null != mListener) {
             mListener.onDragEnd();
@@ -291,7 +296,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void onTap() {
+    protected void onTap() {
         Log.d(TAG, "Floating tab was tapped.");
         expand();
         if (null != mListener) {
@@ -299,7 +304,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void sendToDock() {
+    protected void sendToDock() {
         Log.d(TAG, "Sending floating tab to dock.");
         deactivateDragger();
         mFloatingTab.setDock(mHoverView.mCollapsedDock);
@@ -334,7 +339,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void onDocked() {
+    protected void onDocked() {
         Log.d(TAG, "Docked. Activating dragger.");
         mIsDocked = true;
         activateDragger();
@@ -352,11 +357,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void moveTabTo(@NonNull Point position) {
+    protected void moveTabTo(@NonNull Point position) {
         mFloatingTab.moveTo(position);
     }
 
-    private void closeMenu(final @Nullable Runnable onClosed) {
+    protected void closeMenu(final @Nullable Runnable onClosed) {
         mFloatingTab.disappear(new Runnable() {
             @Override
             public void run() {
@@ -372,7 +377,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     }
 
     private void activateDragger() {
-        mHoverView.mDragger.activate(mDragListener, mFloatingTab.getPosition());
+        mHoverView.mDragger.activate(mDragListener, mFloatingTab.getPosition(), mFloatingTab.getWidth(), mFloatingTab.getHeight());
     }
 
     private void deactivateDragger() {
@@ -396,11 +401,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         void onExited();
     }
 
-    private static final class FloatingTabDragListener implements Dragger.DragListener {
+    protected static final class FloatingTabDragListener implements Dragger.DragListener {
 
         private final HoverViewStateCollapsed mOwner;
 
-        private FloatingTabDragListener(@NonNull HoverViewStateCollapsed owner) {
+        protected FloatingTabDragListener(@NonNull HoverViewStateCollapsed owner) {
             mOwner = owner;
         }
 
