@@ -52,6 +52,7 @@ class FloatingTab extends FrameLayout {
     private final String mId;
     private int mTabSize;
     private View mTabView;
+    private View mTabContentView;
     private Dock mDock;
     private final Set<OnPositionChangeListener> mOnPositionChangeListeners = new CopyOnWriteArraySet<>();
 
@@ -194,6 +195,10 @@ class FloatingTab extends FrameLayout {
             );
             addView(mTabView, layoutParams);
         }
+    }
+
+    public void setTabContentView(View tabContentView) {
+        mTabContentView = tabContentView;
     }
 
     // Returns the center position of this tab.

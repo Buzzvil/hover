@@ -89,7 +89,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         final boolean wasFloatingTabVisible;
         if (null == mFloatingTab) {
             wasFloatingTabVisible = false;
-            mFloatingTab = mHoverView.mScreen.createChainedTab(mHoverView.mSelectedSectionId, mSelectedSection.getTabView());
+            mFloatingTab = mHoverView.mScreen.createChainedTab(mSelectedSection);
         } else {
             wasFloatingTabVisible = true;
         }
@@ -208,10 +208,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
                     mSelectedSectionIndex = mSelectedSectionIndex > 0 ? mSelectedSectionIndex - 1 : 0;
                     mSelectedSection = mHoverView.mMenu.getSection(mSelectedSectionIndex);
                     mHoverView.mSelectedSectionId = mSelectedSection.getId();
-                    mFloatingTab = mHoverView.mScreen.createChainedTab(
-                            mSelectedSection.getId(),
-                            mSelectedSection.getTabView()
-                    );
+                    mFloatingTab = mHoverView.mScreen.createChainedTab(mSelectedSection);
 
                     mFloatingTab.addOnLayoutChangeListener(mOnLayoutChangeListener);
                 }
