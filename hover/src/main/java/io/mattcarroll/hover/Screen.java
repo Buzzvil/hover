@@ -82,13 +82,13 @@ class Screen {
     }
 
     @NonNull
-    public FloatingTab createChainedTab(@NonNull HoverMenu.SectionId sectionId, @NonNull View tabView) {
-        String tabId = sectionId.toString();
-        return createChainedTab(tabId, tabView);
+    public FloatingTab createChainedTab(@NonNull HoverMenu.Section section) {
+        String tabId = section.getId().toString();
+        return createChainedTab(tabId, section.getTabView(), section.getTabContentView());
     }
 
     @NonNull
-    public FloatingTab createChainedTab(@NonNull String tabId, @NonNull View tabView) {
+    public FloatingTab createChainedTab(@NonNull String tabId, @NonNull View tabView, @Nullable View tabContentView) {
         Log.d(TAG, "Existing tabs...");
         for (String existingTabId : mTabs.keySet()) {
             Log.d(TAG, existingTabId);
@@ -99,6 +99,7 @@ class Screen {
             Log.d(TAG, "Creating new tab with ID: " + tabId);
             FloatingTab chainedTab = new FloatingTab(mContainer.getContext(), tabId);
             chainedTab.setTabView(tabView);
+            chainedTab.setTabContentView(tabContentView);
             chainedTab.enableDebugMode(mIsDebugMode);
             mContainer.addView(chainedTab);
             mTabs.put(tabId, chainedTab);

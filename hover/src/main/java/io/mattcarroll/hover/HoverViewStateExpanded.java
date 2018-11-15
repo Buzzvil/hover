@@ -131,10 +131,7 @@ class HoverViewStateExpanded extends BaseHoverViewState {
             for (int i = 0; i < mHoverView.mMenu.getSectionCount(); ++i) {
                 HoverMenu.Section section = mHoverView.mMenu.getSection(i);
                 Log.d(TAG, "Creating tab view for: " + section.getId());
-                final FloatingTab chainedTab = mHoverView.mScreen.createChainedTab(
-                        section.getId(),
-                        section.getTabView()
-                );
+                final FloatingTab chainedTab = mHoverView.mScreen.createChainedTab(section);
                 Log.d(TAG, "Created FloatingTab for ID " + section.getId());
 
                 if (!mHoverView.mSelectedSectionId.equals(section.getId())) {
@@ -397,20 +394,15 @@ class HoverViewStateExpanded extends BaseHoverViewState {
             Log.d(TAG, "Creating tab for section at index " + sectionIndex);
             HoverMenu.Section section = mHoverView.mMenu.getSection(sectionIndex);
             Log.d(TAG, "Adding new tab. Section: " + sectionIndex + ", ID: " + section.getId());
-            FloatingTab newTab = addTab(section.getId(), section.getTabView(), sectionIndex);
+            FloatingTab newTab = addTab(sectionIndex, section);
             mSections.put(newTab, section);
         }
 
         updateChainedPositions();
     }
 
-    private FloatingTab addTab(@NonNull HoverMenu.SectionId sectionId,
-                               @NonNull View tabView,
-                               int position) {
-        final FloatingTab newTab = mHoverView.mScreen.createChainedTab(
-                sectionId,
-                tabView
-        );
+    private FloatingTab addTab(int position, HoverMenu.Section section) {
+        final FloatingTab newTab = mHoverView.mScreen.createChainedTab(section);
         newTab.disappearImmediate();
         if (mChainedTabs.size() <= position) {
             // This section was appended to the end.

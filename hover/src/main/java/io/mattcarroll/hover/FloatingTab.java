@@ -52,6 +52,7 @@ class FloatingTab extends FrameLayout {
     private final String mId;
     private int mTabSize;
     private View mTabView;
+    private View mTabContentView;
     private Dock mDock;
     private final Set<OnPositionChangeListener> mOnPositionChangeListeners = new CopyOnWriteArraySet<>();
 
@@ -196,12 +197,32 @@ class FloatingTab extends FrameLayout {
         }
     }
 
+    public void setTabContentView(View tabContentView) {
+        mTabContentView = tabContentView;
+    }
+
+    public void showTabContentView(SideDock dock) {
+        if (mTabContentView != null) {
+            if (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT) {
+                addView(mTabContentView);
+            } else {
+                addView(mTabContentView, 0);
+            }
+        }
+    }
+
+    public void hideTabContentView() {
+        if (mTabContentView != null) {
+            removeView(mTabContentView);
+        }
+    }
+
     // Returns the center position of this tab.
     @NonNull
     public Point getPosition() {
         return new Point(
-                (int) (getX() + (getTabSize() / 2)),
-                (int) (getY() + (getTabSize() / 2))
+                (int) (getX() + (getWidth() / 2)),
+                (int) (getY() + (getHeight() / 2))
         );
     }
 
