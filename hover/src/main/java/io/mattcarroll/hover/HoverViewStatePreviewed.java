@@ -38,9 +38,14 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     }
 
     @Override
-    protected void changeState(@NonNull HoverViewState nextState) {
+    protected void changeState(@NonNull final HoverViewState nextState) {
         mFloatingTab.hideTabContentView();
-        super.changeState(nextState);
+        mFloatingTab.post(new Runnable() {
+            @Override
+            public void run() {
+                HoverViewStatePreviewed.super.changeState(nextState);
+            }
+        });
     }
 
     @Override
