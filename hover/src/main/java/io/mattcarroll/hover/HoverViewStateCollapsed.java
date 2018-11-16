@@ -108,6 +108,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mHoverView.post(new Runnable() {
             @Override
             public void run() {
+                if (!mHasControl) {
+                    return;
+                }
                 if (wasFloatingTabVisible) {
                     sendToDock();
                 } else {
@@ -303,6 +306,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mFloatingTab.dock(new Runnable() {
             @Override
             public void run() {
+                if (!mHasControl) {
+                    return;
+                }
                 onDocked();
             }
         });
