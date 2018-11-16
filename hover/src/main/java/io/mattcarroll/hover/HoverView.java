@@ -97,6 +97,7 @@ public class HoverView extends RelativeLayout {
     boolean mIsAddedToWindow;
     boolean mIsTouchableInWindow;
     boolean mIsDebugMode = false;
+    boolean mUseShadeView = true;
     int mTabSize;
     OnExitListener mOnExitListener;
     final Set<Listener> mListeners = new CopyOnWriteArraySet<>();
@@ -270,6 +271,14 @@ public class HoverView extends RelativeLayout {
 
     public void close() {
         mState.close();
+    }
+
+    public void setUseShadeView(final boolean useShadeView) {
+        mUseShadeView = useShadeView;
+    }
+
+    public boolean useShadeView() {
+        return mUseShadeView;
     }
 
     public void setOnExitListener(@Nullable OnExitListener listener) {
