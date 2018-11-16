@@ -288,8 +288,8 @@ class FloatingTab extends LinearLayout {
 
     private Point convertCenterToCorner(@NonNull Point centerPosition) {
         return new Point(
-                centerPosition.x - (getTabSize() / 2),
-                centerPosition.y - (getTabSize() / 2)
+                centerPosition.x - (getWidth() / 2),
+                centerPosition.y - (getHeight() / 2)
         );
     }
 
