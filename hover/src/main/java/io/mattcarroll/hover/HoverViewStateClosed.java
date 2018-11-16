@@ -28,7 +28,7 @@ import static android.view.View.GONE;
  */
 class HoverViewStateClosed extends BaseHoverViewState {
 
-    private static final String TAG = "HoverMenuViewStateClosed";
+    private static final String TAG = "HoverViewStateClosed";
 
     private HoverView mHoverView;
     private boolean mHasControl = false;

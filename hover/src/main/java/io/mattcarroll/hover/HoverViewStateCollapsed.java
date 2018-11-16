@@ -37,7 +37,7 @@ import static android.view.View.VISIBLE;
  */
 class HoverViewStateCollapsed extends BaseHoverViewState {
 
-    private static final String TAG = "HoverMenuViewStateCollapsed";
+    private static final String TAG = "HoverViewStateCollapsed";
 
     private HoverView mHoverView;
     private FloatingTab mFloatingTab;
