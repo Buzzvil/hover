@@ -34,18 +34,13 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     public void takeControl(@NonNull HoverView hoverView) {
         super.takeControl(hoverView);
         mHoverView.mState = this;
-        mFloatingTab.showTabContentView(mHoverView.mCollapsedDock);
+        mHoverView.mScreen.showTabContentView(mHoverView.mCollapsedDock);
     }
 
     @Override
     protected void changeState(@NonNull final HoverViewState nextState) {
-        mFloatingTab.hideTabContentView();
-        mFloatingTab.post(new Runnable() {
-            @Override
-            public void run() {
-                HoverViewStatePreviewed.super.changeState(nextState);
-            }
-        });
+        mHoverView.mScreen.hideTabContentView();
+        super.changeState(nextState);
     }
 
     @Override
