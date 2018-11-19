@@ -272,6 +272,7 @@ class FloatingTab extends FrameLayout {
         Point cornerPosition = convertCenterToCorner(floatPosition);
         setX(cornerPosition.x);
         setY(cornerPosition.y);
+        notifyListenersOfPositionChange();
     }
 
     private Point convertCenterToCorner(@NonNull Point centerPosition) {
