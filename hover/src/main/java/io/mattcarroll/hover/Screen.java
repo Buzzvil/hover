@@ -40,7 +40,7 @@ class Screen {
     private ExitView mExitView;
     private ShadeView mShadeView;
     private Map<String, FloatingTab> mTabs = new HashMap<>();
-    private Map<String, View> mTabContentViews = new HashMap<>();
+    private Map<String, TabMessageView> mTabMessageViews = new HashMap<>();
     private boolean mIsDebugMode = false;
 
     Screen(@NonNull ViewGroup hoverMenuContainer) {
@@ -85,11 +85,11 @@ class Screen {
     @NonNull
     public FloatingTab createChainedTab(@NonNull HoverMenu.Section section) {
         String tabId = section.getId().toString();
-        return createChainedTab(tabId, section.getTabView(), section.getTabContentView());
+        return createChainedTab(tabId, section.getTabView(), section.getTabMessageView());
     }
 
     @NonNull
-    public FloatingTab createChainedTab(@NonNull String tabId, @NonNull View tabView, @Nullable View tabContentView) {
+    public FloatingTab createChainedTab(@NonNull String tabId, @NonNull View tabView, @Nullable View tabMessageView) {
         Log.d(TAG, "Existing tabs...");
         for (String existingTabId : mTabs.keySet()) {
             Log.d(TAG, existingTabId);
@@ -103,8 +103,10 @@ class Screen {
             chainedTab.enableDebugMode(mIsDebugMode);
             mContainer.addView(chainedTab);
             mTabs.put(tabId, chainedTab);
-            if (tabContentView != null) {
-                mTabContentViews.put(tabId, tabContentView);
+            if (tabMessageView != null) {
+                final TabMessageView messageView = new TabMessageView(tabView.getContext(), tabMessageView, chainedTab);
+                mContainer.addView(messageView);
+                mTabMessageViews.put(tabId, messageView);
             }
             return chainedTab;
         }
@@ -139,19 +141,15 @@ class Screen {
         return mShadeView;
     }
 
-    public void showTabContentView(SideDock dock) {
-//        if (mTabContentView != null) {
-//            if (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT) {
-//                addView(mTabContentView);
-//            } else {
-//                addView(mTabContentView, 0);
-//            }
-//        }
+    public void showTabContentView(final HoverMenu.SectionId sectionId, final SideDock dock) {
+        if (getChainedTab(sectionId) != null && mTabMessageViews.get(sectionId.toString()) != null) {
+            mTabMessageViews.get(sectionId.toString()).appear(dock);
+        }
     }
 
-    public void hideTabContentView() {
-//        if (mTabContentView != null) {
-//            removeView(mTabContentView);
-//        }
+    public void hideTabContentView(final HoverMenu.SectionId sectionId) {
+        if (getChainedTab(sectionId) != null && mTabMessageViews.get(sectionId.toString()) != null) {
+            mTabMessageViews.get(sectionId.toString()).disappear();
+        }
     }
 }
