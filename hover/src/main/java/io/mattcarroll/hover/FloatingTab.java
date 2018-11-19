@@ -49,7 +49,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 class FloatingTab extends FrameLayout {
 
     private static final String TAG = "FloatingTab";
-    private static final int APPREARING_ANIMATION_DURATION = 300;
+    private static final int APPEARING_ANIMATION_DURATION = 300;
 
     private final String mId;
     private int mTabSize;
@@ -103,10 +103,10 @@ class FloatingTab extends FrameLayout {
     public void appear(@Nullable final Runnable onAppeared) {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f, 1.0f);
-        scaleX.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleX.setDuration(APPEARING_ANIMATION_DURATION);
         scaleX.setInterpolator(new DecelerateInterpolator());
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f, 1.0f);
-        scaleY.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleY.setDuration(APPEARING_ANIMATION_DURATION);
         scaleY.setInterpolator(new DecelerateInterpolator());
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
@@ -142,9 +142,9 @@ class FloatingTab extends FrameLayout {
     public void disappear(@Nullable final Runnable onDisappeared) {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f);
-        scaleX.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleX.setDuration(APPEARING_ANIMATION_DURATION);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f);
-        scaleY.setDuration(APPREARING_ANIMATION_DURATION);
+        scaleY.setDuration(APPEARING_ANIMATION_DURATION);
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
 

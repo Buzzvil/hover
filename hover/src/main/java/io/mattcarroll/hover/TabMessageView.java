@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 public class TabMessageView extends FrameLayout {
-    private static final String TAG = "TabContentView";
+    private static final String TAG = "TabMessageView";
 
     private final FloatingTab mFloatingTab;
     private SideDock mSideDock;
@@ -47,7 +47,7 @@ public class TabMessageView extends FrameLayout {
 
     public void disappear() {
         setVisibility(GONE);
-        mSideDock = null;
         mFloatingTab.removeOnPositionChangeListener(mOnTabPositionChangeListener);
+        mSideDock = null;
     }
 }
