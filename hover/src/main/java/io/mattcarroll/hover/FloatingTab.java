@@ -25,12 +25,11 @@ import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -47,7 +46,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
  *
  * {@code FloatingTab}s position themselves based on their center.
  */
-class FloatingTab extends LinearLayout {
+class FloatingTab extends FrameLayout {
 
     private static final String TAG = "FloatingTab";
     private static final int APPREARING_ANIMATION_DURATION = 300;
@@ -70,12 +69,21 @@ class FloatingTab extends LinearLayout {
         super(context);
         mId = tabId;
         mTabSize = getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
-        setGravity(Gravity.CENTER_VERTICAL);
+
+        int padding = getResources().getDimensionPixelSize(R.dimen.hover_tab_margin);
+        setPadding(padding, padding, padding, padding);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
+        // Make this View the desired size.
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        layoutParams.width = mTabSize;
+        layoutParams.height = mTabSize;
+        setLayoutParams(layoutParams);
+
         addOnLayoutChangeListener(mOnLayoutChangeListener);
     }
 
@@ -185,9 +193,10 @@ class FloatingTab extends LinearLayout {
 
         mTabView = view;
         if (null != mTabView) {
-            ViewGroup.LayoutParams layoutParams = new LinearLayout.LayoutParams(mTabSize, mTabSize);
-            final int padding = getResources().getDimensionPixelSize(R.dimen.hover_tab_margin);
-            mTabView.setPadding(padding, padding, padding, padding);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+            );
             addView(mTabView, layoutParams);
         }
     }
@@ -288,8 +297,8 @@ class FloatingTab extends LinearLayout {
 
     private Point convertCenterToCorner(@NonNull Point centerPosition) {
         return new Point(
-                centerPosition.x - (getWidth() / 2),
-                centerPosition.y - (getHeight() / 2)
+                centerPosition.x - (getTabSize() / 2),
+                centerPosition.y - (getTabSize() / 2)
         );
     }
 
