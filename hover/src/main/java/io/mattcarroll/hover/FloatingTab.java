@@ -54,7 +54,6 @@ class FloatingTab extends FrameLayout {
     private final String mId;
     private int mTabSize;
     private View mTabView;
-    private View mTabContentView;
     private Dock mDock;
     private final Set<OnPositionChangeListener> mOnPositionChangeListeners = new CopyOnWriteArraySet<>();
 
@@ -198,26 +197,6 @@ class FloatingTab extends FrameLayout {
                     ViewGroup.LayoutParams.MATCH_PARENT
             );
             addView(mTabView, layoutParams);
-        }
-    }
-
-    public void setTabContentView(View tabContentView) {
-        mTabContentView = tabContentView;
-    }
-
-    public void showTabContentView(SideDock dock) {
-        if (mTabContentView != null) {
-            if (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT) {
-                addView(mTabContentView);
-            } else {
-                addView(mTabContentView, 0);
-            }
-        }
-    }
-
-    public void hideTabContentView() {
-        if (mTabContentView != null) {
-            removeView(mTabContentView);
         }
     }
 

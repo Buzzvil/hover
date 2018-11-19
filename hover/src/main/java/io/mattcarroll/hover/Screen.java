@@ -40,6 +40,7 @@ class Screen {
     private ExitView mExitView;
     private ShadeView mShadeView;
     private Map<String, FloatingTab> mTabs = new HashMap<>();
+    private Map<String, View> mTabContentViews = new HashMap<>();
     private boolean mIsDebugMode = false;
 
     Screen(@NonNull ViewGroup hoverMenuContainer) {
@@ -99,10 +100,12 @@ class Screen {
             Log.d(TAG, "Creating new tab with ID: " + tabId);
             FloatingTab chainedTab = new FloatingTab(mContainer.getContext(), tabId);
             chainedTab.setTabView(tabView);
-            chainedTab.setTabContentView(tabContentView);
             chainedTab.enableDebugMode(mIsDebugMode);
             mContainer.addView(chainedTab);
             mTabs.put(tabId, chainedTab);
+            if (tabContentView != null) {
+                mTabContentViews.put(tabId, tabContentView);
+            }
             return chainedTab;
         }
     }
@@ -134,5 +137,21 @@ class Screen {
 
     public ShadeView getShadeView() {
         return mShadeView;
+    }
+
+    public void showTabContentView(SideDock dock) {
+//        if (mTabContentView != null) {
+//            if (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT) {
+//                addView(mTabContentView);
+//            } else {
+//                addView(mTabContentView, 0);
+//            }
+//        }
+    }
+
+    public void hideTabContentView() {
+//        if (mTabContentView != null) {
+//            removeView(mTabContentView);
+//        }
     }
 }
