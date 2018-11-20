@@ -299,7 +299,7 @@ class FloatingTab extends FrameLayout {
 
     private void notifyListenersOfDockChange() {
         for (OnPositionChangeListener listener : mOnPositionChangeListeners) {
-            listener.onDockChange(mDock.position());
+            listener.onDockChange(mDock);
         }
     }
 
@@ -312,6 +312,6 @@ class FloatingTab extends FrameLayout {
     public interface OnPositionChangeListener {
         void onPositionChange(@NonNull Point tabPosition);
 
-        void onDockChange(@NonNull Point dockPosition);
+        void onDockChange(@NonNull Dock dock);
     }
 }

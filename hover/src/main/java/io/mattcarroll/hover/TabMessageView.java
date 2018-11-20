@@ -32,8 +32,13 @@ public class TabMessageView extends FrameLayout {
         }
 
         @Override
-        public void onDockChange(@NonNull Point dock) {
-            // No-op.
+        public void onDockChange(@NonNull Dock dock) {
+            if (dock instanceof SideDock) {
+                final SideDock sideDock = (SideDock) dock;
+                if (sideDock.sidePosition() != mSideDock.sidePosition()) {
+                    appear(sideDock);
+                }
+            }
         }
     };
 
