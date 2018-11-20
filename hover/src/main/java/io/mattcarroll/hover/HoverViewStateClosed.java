@@ -67,7 +67,6 @@ class HoverViewStateClosed extends BaseHoverViewState {
     }
 
     private void changeState(@NonNull HoverViewState nextState) {
-        Log.d(TAG, "Giving up control.");
         if (!mHasControl) {
             throw new RuntimeException("Cannot give control to another HoverMenuController when we don't have the HoverTab.");
         }
