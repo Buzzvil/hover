@@ -28,7 +28,7 @@ public interface Dragger {
      * @param dragListener listener that receives information about drag behavior
      * @param dragStartCenterPosition initial touch point to start dragging
      */
-    void activate(@NonNull DragListener dragListener, @NonNull Point dragStartCenterPosition, int dragAreaWidth, int dragAreaHeight);
+    void activate(@NonNull DragListener dragListener, @NonNull Point dragStartCenterPosition);
 
     /**
      * Stops monitoring and reporting user drag behavior.
