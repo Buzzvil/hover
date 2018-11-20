@@ -5,6 +5,11 @@ import android.graphics.Point;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 
 public class TabMessageView extends FrameLayout {
@@ -40,14 +45,39 @@ public class TabMessageView extends FrameLayout {
     }
 
     public void appear(final SideDock dock) {
-        setVisibility(VISIBLE);
         mSideDock = dock;
         mFloatingTab.addOnPositionChangeListener(mOnTabPositionChangeListener);
+        startAnimation(buildAppearAnimation(dock));
+        setVisibility(VISIBLE);
     }
 
     public void disappear() {
-        setVisibility(GONE);
         mFloatingTab.removeOnPositionChangeListener(mOnTabPositionChangeListener);
         mSideDock = null;
+        startAnimation(buildDisappearAnimation());
+        setVisibility(GONE);
+    }
+
+    public Animation buildAppearAnimation(final SideDock dock) {
+        final AnimationSet animation = new AnimationSet(true);
+        final AlphaAnimation alpha = new AlphaAnimation(0, 1);
+        final float fromXDelta = getResources().getDimensionPixelSize(R.dimen.hover_message_animate_translation_x)
+                * (dock.sidePosition().getSide() == SideDock.SidePosition.LEFT ? -1 : 1);
+        final float fromYDelta = getResources().getDimensionPixelSize(R.dimen.hover_message_animate_translation_y);
+        TranslateAnimation translate = new TranslateAnimation(fromXDelta, 0, fromYDelta, 0);
+        animation.setDuration(300);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.addAnimation(alpha);
+        animation.addAnimation(translate);
+        return animation;
+    }
+
+    public Animation buildDisappearAnimation() {
+        final AnimationSet animation = new AnimationSet(true);
+        final AlphaAnimation alpha = new AlphaAnimation(1, 0);
+        alpha.setDuration(300);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.addAnimation(alpha);
+        return animation;
     }
 }
