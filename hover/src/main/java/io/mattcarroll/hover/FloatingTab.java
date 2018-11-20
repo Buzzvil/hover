@@ -204,8 +204,8 @@ class FloatingTab extends FrameLayout {
     @NonNull
     public Point getPosition() {
         return new Point(
-                (int) (getX() + (getWidth() / 2)),
-                (int) (getY() + (getHeight() / 2))
+                (int) (getX() + (getTabSize() / 2)),
+                (int) (getY() + (getTabSize() / 2))
         );
     }
 
