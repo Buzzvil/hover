@@ -38,6 +38,8 @@ import static android.view.View.VISIBLE;
 class HoverViewStateCollapsed extends BaseHoverViewState {
 
     private static final String TAG = "HoverViewStateCollapsed";
+    private static final float MIN_TAB_VERTICAL_POSITION = 0.0f;
+    private static final float MAX_TAB_VERTICAL_POSITION = 1.0f;
 
     protected HoverView mHoverView;
     private FloatingTab mFloatingTab;
@@ -276,6 +278,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
             Point screenSize = new Point(mHoverView.mScreen.getWidth(), mHoverView.mScreen.getHeight());
             float tabHorizontalPositionPercent = (float) mFloatingTab.getPosition().x / screenSize.x;
             float tabVerticalPosition = (float) mFloatingTab.getPosition().y / screenSize.y;
+            if (tabVerticalPosition < MIN_TAB_VERTICAL_POSITION) {
+                tabVerticalPosition = MIN_TAB_VERTICAL_POSITION;
+            } else if (tabVerticalPosition > MAX_TAB_VERTICAL_POSITION) {
+                tabVerticalPosition = MAX_TAB_VERTICAL_POSITION;
+            }
             Log.d(TAG, "Dropped at horizontal " + tabHorizontalPositionPercent + ", vertical " + tabVerticalPosition);
             SideDock.SidePosition sidePosition = new SideDock.SidePosition(
                     tabHorizontalPositionPercent <= 0.5 ? SideDock.SidePosition.LEFT : SideDock.SidePosition.RIGHT,
