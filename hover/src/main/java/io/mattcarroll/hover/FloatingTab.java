@@ -27,7 +27,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 
@@ -105,7 +104,7 @@ class FloatingTab extends FrameLayout {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f, 1.0f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f, 1.0f);
         animatorSet.setDuration(APPEARING_ANIMATION_DURATION);
-        animatorSet.setInterpolator(new DecelerateInterpolator());
+        animatorSet.setInterpolator(new OvershootInterpolator());
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
 
@@ -142,7 +141,6 @@ class FloatingTab extends FrameLayout {
         ObjectAnimator scaleX = ObjectAnimator.ofFloat(this, "scaleX", 0.0f);
         ObjectAnimator scaleY = ObjectAnimator.ofFloat(this, "scaleY", 0.0f);
         animatorSet.setDuration(APPEARING_ANIMATION_DURATION);
-        animatorSet.setInterpolator(new DecelerateInterpolator());
         animatorSet.playTogether(scaleX, scaleY);
         animatorSet.start();
 
