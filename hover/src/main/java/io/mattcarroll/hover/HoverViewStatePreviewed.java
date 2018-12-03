@@ -36,7 +36,11 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
 
     @Override
     protected void changeState(@NonNull final HoverViewState nextState) {
-        mHoverView.mScreen.hideTabContentView(mHoverView.mSelectedSectionId);
+        if (nextState instanceof HoverViewStateCollapsed) {
+            mHoverView.mScreen.hideTabContentView(mHoverView.mSelectedSectionId, true);
+        } else {
+            mHoverView.mScreen.hideTabContentView(mHoverView.mSelectedSectionId, false);
+        }
         super.changeState(nextState);
     }
 

@@ -147,9 +147,10 @@ class Screen {
         }
     }
 
-    public void hideTabContentView(final HoverMenu.SectionId sectionId) {
-        if (getChainedTab(sectionId) != null && mTabMessageViews.get(sectionId.toString()) != null) {
-            mTabMessageViews.get(sectionId.toString()).disappear();
+    public void hideTabContentView(final HoverMenu.SectionId sectionId, final boolean withAnimation) {
+        final TabMessageView tabMessageView = mTabMessageViews.get(sectionId.toString());
+        if (tabMessageView != null) {
+            tabMessageView.disappear(withAnimation);
         }
     }
 }

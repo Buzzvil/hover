@@ -56,10 +56,12 @@ public class TabMessageView extends FrameLayout {
         setVisibility(VISIBLE);
     }
 
-    public void disappear() {
+    public void disappear(final boolean withAnimation) {
         mFloatingTab.removeOnPositionChangeListener(mOnTabPositionChangeListener);
         mSideDock = null;
-        startAnimation(buildDisappearAnimation());
+        if (withAnimation) {
+            startAnimation(buildDisappearAnimation());
+        }
         setVisibility(GONE);
     }
 
