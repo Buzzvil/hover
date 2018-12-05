@@ -102,7 +102,7 @@ public class HoverView extends RelativeLayout {
     boolean mUseShadeView = true;
     int mTabSize;
     OnExitListener mOnExitListener;
-    final Set<Listener> mListeners = new CopyOnWriteArraySet<>();
+    final Set<OnStateChangeListener> mOnStateChangeListeners = new CopyOnWriteArraySet<>();
 
     // Public for use with XML inflation. Clients should use static methods for construction.
     public HoverView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -289,53 +289,53 @@ public class HoverView extends RelativeLayout {
         mOnExitListener = listener;
     }
 
-    public void addOnExpandAndCollapseListener(@NonNull Listener listener) {
-        mListeners.add(listener);
+    public void addOnStateChangeListener(@NonNull OnStateChangeListener onStateChangeListener) {
+        mOnStateChangeListeners.add(onStateChangeListener);
     }
 
-    public void removeOnExpandAndCollapseListener(@NonNull Listener listener) {
-        mListeners.remove(listener);
+    public void removeOnStateChangeListener(@NonNull OnStateChangeListener onStateChangeListener) {
+        mOnStateChangeListeners.remove(onStateChangeListener);
     }
 
     void notifyListenersExpanding() {
         Log.d(TAG, "Notifying listeners that Hover is expanding.");
-        for (Listener listener : mListeners) {
-            listener.onExpanding();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onExpanding();
         }
     }
 
     void notifyListenersExpanded() {
         Log.d(TAG, "Notifying listeners that Hover is now expanded.");
-        for (Listener listener : mListeners) {
-            listener.onExpanded();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onExpanded();
         }
     }
 
     void notifyListenersCollapsing() {
         Log.d(TAG, "Notifying listeners that Hover is collapsing.");
-        for (Listener listener : mListeners) {
-            listener.onCollapsing();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onCollapsing();
         }
     }
 
     void notifyListenersCollapsed() {
         Log.d(TAG, "Notifying listeners that Hover is now collapsed.");
-        for (Listener listener : mListeners) {
-            listener.onCollapsed();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onCollapsed();
         }
     }
 
     void notifyListenersClosing() {
         Log.d(TAG, "Notifying listeners that Hover is closing.");
-        for (Listener listener : mListeners) {
-            listener.onClosing();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onClosing();
         }
     }
 
     void notifyListenersClosed() {
         Log.d(TAG, "Notifying listeners that Hover is closed.");
-        for (Listener listener : mListeners) {
-            listener.onClosed();
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onClosed();
         }
     }
 
@@ -517,7 +517,7 @@ public class HoverView extends RelativeLayout {
     /**
      * Listener invoked when the corresponding transitions occur within a given {@link HoverView}.
      */
-    public interface Listener {
+    public interface OnStateChangeListener {
 
         void onExpanding();
 
@@ -530,6 +530,37 @@ public class HoverView extends RelativeLayout {
         void onClosing();
 
         void onClosed();
+    }
 
+    public static class DefaultOnStateChangeListener implements OnStateChangeListener {
+        @Override
+        public void onExpanding() {
+
+        }
+
+        @Override
+        public void onExpanded() {
+
+        }
+
+        @Override
+        public void onCollapsing() {
+
+        }
+
+        @Override
+        public void onCollapsed() {
+
+        }
+
+        @Override
+        public void onClosing() {
+
+        }
+
+        @Override
+        public void onClosed() {
+
+        }
     }
 }
