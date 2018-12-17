@@ -3,6 +3,7 @@ package io.mattcarroll.hover;
 import android.content.Context;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.Log;
 import android.view.View;
@@ -36,7 +37,7 @@ public class TabMessageView extends FrameLayout {
             if (dock instanceof SideDock) {
                 final SideDock sideDock = (SideDock) dock;
                 if (sideDock.sidePosition() != mSideDock.sidePosition()) {
-                    appear(sideDock);
+                    appear(sideDock, null);
                 }
             }
         }
@@ -49,23 +50,9 @@ public class TabMessageView extends FrameLayout {
         setVisibility(GONE);
     }
 
-    public void appear(final SideDock dock) {
+    public void appear(final SideDock dock, @Nullable final Runnable onAppeared) {
         mSideDock = dock;
         mFloatingTab.addOnPositionChangeListener(mOnTabPositionChangeListener);
-        startAnimation(buildAppearAnimation(dock));
-        setVisibility(VISIBLE);
-    }
-
-    public void disappear(final boolean withAnimation) {
-        mFloatingTab.removeOnPositionChangeListener(mOnTabPositionChangeListener);
-        mSideDock = null;
-        if (withAnimation) {
-            startAnimation(buildDisappearAnimation());
-        }
-        setVisibility(GONE);
-    }
-
-    public Animation buildAppearAnimation(final SideDock dock) {
         final AnimationSet animation = new AnimationSet(true);
         final AlphaAnimation alpha = new AlphaAnimation(0, 1);
         final float fromXDelta = getResources().getDimensionPixelSize(R.dimen.hover_message_animate_translation_x)
@@ -76,14 +63,36 @@ public class TabMessageView extends FrameLayout {
         animation.setInterpolator(new LinearOutSlowInInterpolator());
         animation.addAnimation(alpha);
         animation.addAnimation(translate);
-        return animation;
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (onAppeared != null) {
+                    onAppeared.run();
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        startAnimation(animation);
+        setVisibility(VISIBLE);
     }
 
-    public Animation buildDisappearAnimation() {
-        final AnimationSet animation = new AnimationSet(true);
-        final AlphaAnimation alpha = new AlphaAnimation(1, 0);
-        alpha.setDuration(300);
-        animation.addAnimation(alpha);
-        return animation;
+    public void disappear(final boolean withAnimation) {
+        mFloatingTab.removeOnPositionChangeListener(mOnTabPositionChangeListener);
+        mSideDock = null;
+        if (withAnimation) {
+            final AnimationSet animation = new AnimationSet(true);
+            final AlphaAnimation alpha = new AlphaAnimation(1, 0);
+            alpha.setDuration(300);
+            animation.addAnimation(alpha);
+            startAnimation(animation);
+        }
+        setVisibility(GONE);
     }
 }

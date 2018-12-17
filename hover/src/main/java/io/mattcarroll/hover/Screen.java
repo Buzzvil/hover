@@ -141,9 +141,9 @@ class Screen {
         return mShadeView;
     }
 
-    public void showTabContentView(final HoverMenu.SectionId sectionId, final SideDock dock) {
+    public void showTabContentView(final HoverMenu.SectionId sectionId, final SideDock dock, final Runnable onAppeared) {
         if (getChainedTab(sectionId) != null && mTabMessageViews.get(sectionId.toString()) != null) {
-            mTabMessageViews.get(sectionId.toString()).appear(dock);
+            mTabMessageViews.get(sectionId.toString()).appear(dock, onAppeared);
         }
     }
 
