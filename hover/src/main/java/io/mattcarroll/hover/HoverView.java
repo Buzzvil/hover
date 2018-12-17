@@ -325,6 +325,18 @@ public class HoverView extends RelativeLayout {
         }
     }
 
+    void notifyListenersPreviewing() {
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onPreviewing();
+        }
+    }
+
+    void notifyListenersPreviewed() {
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onPreviewed();
+        }
+    }
+
     void notifyListenersClosing() {
         Log.d(TAG, "Notifying listeners that Hover is closing.");
         for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
@@ -527,6 +539,10 @@ public class HoverView extends RelativeLayout {
 
         void onCollapsed();
 
+        void onPreviewing();
+
+        void onPreviewed();
+
         void onClosing();
 
         void onClosed();
@@ -550,6 +566,16 @@ public class HoverView extends RelativeLayout {
 
         @Override
         public void onCollapsed() {
+
+        }
+
+        @Override
+        public void onPreviewing() {
+
+        }
+
+        @Override
+        public void onPreviewed() {
 
         }
 
