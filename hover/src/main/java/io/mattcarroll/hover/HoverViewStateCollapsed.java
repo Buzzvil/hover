@@ -358,11 +358,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mFloatingTab.moveTo(position);
     }
 
-    private void activateDragger() {
-        mHoverView.mDragger.activate(mDragListener, mFloatingTab.getPosition());
+    protected void activateDragger() {
+        mHoverView.mDragger.activate(mDragListener, mFloatingTab);
     }
 
-    private void deactivateDragger() {
+    protected void deactivateDragger() {
         mHoverView.mDragger.deactivate();
     }
 
