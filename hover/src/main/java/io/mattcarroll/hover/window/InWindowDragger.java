@@ -34,7 +34,6 @@ public class InWindowDragger implements Dragger {
 
     private final Context mContext;
     private final WindowViewController mWindowViewController;
-    private final int mTouchAreaDiameter;
     private final float mTapTouchSlop;
     private View mDragView;
     private Dragger.DragListener mDragListener;
@@ -108,24 +107,24 @@ public class InWindowDragger implements Dragger {
      */
     public InWindowDragger(@NonNull Context context,
                            @NonNull WindowViewController windowViewController,
-                           int touchAreaDiameter,
                            float tapTouchSlop) {
         mContext = context;
         mWindowViewController = windowViewController;
-        mTouchAreaDiameter = touchAreaDiameter;
         mTapTouchSlop = tapTouchSlop;
     }
 
-    public void activate(@NonNull DragListener dragListener, @NonNull Point dragStartCenterPosition) {
+    @Override
+    public void activate(@NonNull DragListener dragListener, @NonNull View draggedView) {
         if (!mIsActivated) {
             Log.d(TAG, "Activating.");
-            createTouchControlView(dragStartCenterPosition);
+            createTouchControlView(draggedView);
             mDragListener = dragListener;
             mDragView.setOnTouchListener(mDragTouchListener);
             mIsActivated = true;
         }
     }
 
+    @Override
     public void deactivate() {
         if (mIsActivated) {
             Log.d(TAG, "Deactivating.");
@@ -141,11 +140,10 @@ public class InWindowDragger implements Dragger {
         updateTouchControlViewAppearance();
     }
 
-    private void createTouchControlView(@NonNull final Point dragStartCenterPosition) {
-        // TODO: define dimen size
+    private void createTouchControlView(@NonNull final View draggedView) {
         mDragView = new View(mContext);
-        mWindowViewController.addView(mTouchAreaDiameter, mTouchAreaDiameter, true, mDragView);
-        mWindowViewController.moveViewTo(mDragView, dragStartCenterPosition.x - (mTouchAreaDiameter / 2), dragStartCenterPosition.y - (mTouchAreaDiameter / 2));
+        mWindowViewController.addView(draggedView.getWidth(), draggedView.getHeight(), true, mDragView);
+        mWindowViewController.moveViewTo(mDragView, (int) draggedView.getX(), (int) draggedView.getY());
         mDragView.setOnTouchListener(mDragTouchListener);
 
         updateTouchControlViewAppearance();
