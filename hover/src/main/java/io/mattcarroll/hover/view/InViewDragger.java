@@ -16,6 +16,7 @@
 package io.mattcarroll.hover.view;
 
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -108,12 +109,12 @@ public class InViewDragger implements Dragger {
     }
 
     @Override
-    public void activate(@NonNull DragListener dragListener, @NonNull View draggedView) {
+    public void activate(@NonNull DragListener dragListener, @NonNull Rect rect) {
         if (!mIsActivated) {
             Log.d(TAG, "Activating.");
             mIsActivated = true;
             mDragListener = dragListener;
-            createTouchControlView(draggedView);
+            createTouchControlView(rect);
         }
     }
 
@@ -126,15 +127,16 @@ public class InViewDragger implements Dragger {
         }
     }
 
-    private void createTouchControlView(@NonNull View draggedView) {
+    private void createTouchControlView(@NonNull Rect rect) {
         mDragView = new View(mContainer.getContext());
         mDragView.setId(R.id.hover_drag_view);
-        mDragView.setLayoutParams(new ViewGroup.LayoutParams(draggedView.getWidth(), draggedView.getHeight()));
+        final int width = rect.right - rect.left;
+        final int height = rect.bottom - rect.top;
+        mDragView.setLayoutParams(new ViewGroup.LayoutParams(width, height));
         mDragView.setOnTouchListener(mDragTouchListener);
         mContainer.addView(mDragView);
 
-        moveDragViewTo(new PointF(draggedView.getX() + (draggedView.getWidth() / 2),
-                draggedView.getY() + (draggedView.getHeight() / 2)));
+        moveDragViewTo(new PointF((rect.right + rect.left) / 2, (rect.bottom + rect.top) / 2));
         updateTouchControlViewAppearance();
     }
 

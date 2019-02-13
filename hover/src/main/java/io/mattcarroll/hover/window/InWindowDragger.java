@@ -18,6 +18,7 @@ package io.mattcarroll.hover.window;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -114,10 +115,10 @@ public class InWindowDragger implements Dragger {
     }
 
     @Override
-    public void activate(@NonNull DragListener dragListener, @NonNull View draggedView) {
+    public void activate(@NonNull DragListener dragListener, @NonNull Rect rect) {
         if (!mIsActivated) {
             Log.d(TAG, "Activating.");
-            createTouchControlView(draggedView);
+            createTouchControlView(rect);
             mDragListener = dragListener;
             mDragView.setOnTouchListener(mDragTouchListener);
             mIsActivated = true;
@@ -140,10 +141,12 @@ public class InWindowDragger implements Dragger {
         updateTouchControlViewAppearance();
     }
 
-    private void createTouchControlView(@NonNull final View draggedView) {
+    private void createTouchControlView(@NonNull Rect rect) {
         mDragView = new View(mContext);
-        mWindowViewController.addView(draggedView.getWidth(), draggedView.getHeight(), true, mDragView);
-        mWindowViewController.moveViewTo(mDragView, (int) draggedView.getX(), (int) draggedView.getY());
+        final int width = rect.right - rect.left;
+        final int height = rect.bottom - rect.top;
+        mWindowViewController.addView(width, height, true, mDragView);
+        mWindowViewController.moveViewTo(mDragView, rect.left, rect.top);
         mDragView.setOnTouchListener(mDragTouchListener);
 
         updateTouchControlViewAppearance();
