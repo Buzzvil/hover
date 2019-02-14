@@ -50,7 +50,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private boolean mIsCollapsed = false;
     private boolean mIsDocked = false;
     protected Dragger.DragListener mDragListener;
-    private Listener mListener;
     private Handler mHandler = new Handler();
     private Runnable mAlphaChanger = new Runnable() {
         @Override
@@ -95,9 +94,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
         mDragListener = new FloatingTabDragListener(this);
         mIsCollapsed = false; // We're collapsing, not yet collapsed.
-        if (null != mListener) {
-            mListener.onCollapsing();
-        }
         initDockPosition();
 
         // post() animation to dock in case the container hasn't measured itself yet.
@@ -207,25 +203,14 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         // No-op
     }
 
-    public void setListener(@Nullable Listener listener) {
-        mListener = listener;
-    }
-
     private void onPickedUpByUser() {
         mIsDocked = false;
         mHoverView.mScreen.getExitView().setVisibility(VISIBLE);
-        if (null != mListener) {
-            mListener.onDragStart();
-        }
         restoreHoverViewAlphaValue();
     }
 
     private void onDroppedByUser() {
         mHoverView.mScreen.getExitView().setVisibility(GONE);
-        if (null != mListener) {
-            mListener.onDragEnd();
-        }
-
         boolean droppedOnExit = mHoverView.mScreen.getExitView().isInExitZone(mFloatingTab.getPosition());
         if (droppedOnExit) {
             Log.d(TAG, "User dropped floating tab on exit.");
@@ -259,10 +244,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
     private void onTap() {
         Log.d(TAG, "Floating tab was tapped.");
-        mHoverView.expand();
-        if (null != mListener) {
-            mListener.onTap();
-        }
+//        mHoverView.expand();
+        mHoverView.anchor();
     }
 
     private void sendToDock() {
@@ -310,12 +293,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         boolean didJustCollapse = !mIsCollapsed;
         mIsCollapsed = true;
         mHoverView.saveVisualState();
-        if (null != mListener) {
-            if (didJustCollapse) {
-                mHoverView.notifyListenersCollapsed();
-                mListener.onCollapsed();
-            }
-            mListener.onDocked();
+        if (didJustCollapse) {
+            mHoverView.notifyListenersCollapsed();
         }
     }
 
@@ -340,23 +319,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     protected void restoreHoverViewAlphaValue() {
         mHandler.removeCallbacks(mAlphaChanger);
         mHoverView.setAlpha(1f);
-    }
-
-    public interface Listener {
-        void onCollapsing();
-
-        void onCollapsed();
-
-        void onDragStart();
-
-        void onDragEnd();
-
-        void onDocked();
-
-        void onTap();
-
-        // TODO: do we need this?
-        void onExited();
     }
 
     protected static final class FloatingTabDragListener implements Dragger.DragListener {
