@@ -15,6 +15,7 @@
  */
 package io.mattcarroll.hover;
 
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -61,6 +62,16 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     @Override
     public void collapse() {
         changeState(mHoverView.mCollapsed);
+    }
+
+    @Override
+    protected void moveTabTo(@NonNull Point position) {
+        final int floatingTabOffset = mMessageView.getWidth() / 2;
+        if (mHoverView.mCollapsedDock.sidePosition().getSide() == SideDock.SidePosition.RIGHT) {
+            mFloatingTab.moveTo(new Point(position.x + floatingTabOffset, position.y));
+        } else {
+            mFloatingTab.moveTo(new Point(position.x - floatingTabOffset, position.y));
+        }
     }
 
     @Override

@@ -355,7 +355,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     }
 
-    private void moveTabTo(@NonNull Point position) {
+    protected void moveTabTo(@NonNull Point position) {
         mFloatingTab.moveTo(position);
     }
 
