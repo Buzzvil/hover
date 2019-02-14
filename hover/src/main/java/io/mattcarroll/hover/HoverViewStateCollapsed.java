@@ -44,11 +44,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private static final float MAX_TAB_VERTICAL_POSITION = 1.0f;
     private static final long ALPHA_IDLE_MILLIS = 5000;
 
-    protected HoverView mHoverView;
     protected FloatingTab mFloatingTab;
     private HoverMenu.Section mSelectedSection;
     private int mSelectedSectionIndex = -1;
-    private boolean mHasControl = false;
     private boolean mIsCollapsed = false;
     private boolean mIsDocked = false;
     protected Dragger.DragListener mDragListener;
@@ -57,7 +55,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private Runnable mAlphaChanger = new Runnable() {
         @Override
         public void run() {
-            if (!(mHoverView.mState instanceof HoverViewStatePreviewed) && mHoverView.mState instanceof HoverViewStateCollapsed) {
+            final HoverViewState state = mHoverView.getState();
+            if (!(state instanceof HoverViewStatePreviewed) && state instanceof HoverViewStateCollapsed) {
                 mHoverView.setAlpha(0.5f);
             }
         }
@@ -66,7 +65,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private final View.OnLayoutChangeListener mOnLayoutChangeListener = new View.OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-            if (mHasControl && mIsDocked) {
+            if (hasControl() && mIsDocked) {
                 // We're docked. Adjust the tab position in case the screen was rotated. This should
                 // only be a concern when displaying as a window overlay, but not when displaying
                 // within a view hierarchy.
@@ -75,24 +74,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
     };
 
-    HoverViewStateCollapsed() { }
-
     @Override
     public void takeControl(@NonNull HoverView hoverView) {
-        Log.d(TAG, "Taking control.");
         super.takeControl(hoverView);
-
-        if (mHasControl) {
-            Log.w(TAG, "Already has control.");
-            return;
-        }
-
-        Log.d(TAG, "Instructing tab to dock itself.");
-        mHasControl = true;
-        mHoverView = hoverView;
-        mHoverView.mState = this;
+        Log.d(TAG, "Taking control.");
         mHoverView.clearFocus(); // For handling hardware back button presses.
-        mHoverView.mScreen.getContentDisplay().setVisibility(GONE);
         mHoverView.makeUntouchableInWindow();
 
         Log.d(TAG, "Taking control with selected section: " + mHoverView.mSelectedSectionId);
@@ -122,7 +108,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mHoverView.post(new Runnable() {
             @Override
             public void run() {
-                if (!mHasControl) {
+                if (!hasControl()) {
                     return;
                 }
                 if (wasFloatingTabVisible) {
@@ -145,31 +131,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     }
 
     @Override
-    public void preview() {
-        changeState(mHoverView.mPreviewed);
-    }
-
-    @Override
-    public void expand() {
-        changeState(mHoverView.mExpanded);
-    }
-
-    @Override
-    public void collapse() {
-        Log.d(TAG, "Instructed to collapse, but already collapsed.");
-    }
-
-    @Override
-    public void close() {
-        changeState(mHoverView.mClosed);
-    }
-
-    protected void changeState(@NonNull HoverViewState nextState) {
+    public void giveUpControl(@NonNull HoverViewState nextState) {
         Log.d(TAG, "Giving up control.");
-        if (!mHasControl) {
-            throw new RuntimeException("Cannot give control to another HoverMenuController when we don't have the HoverTab.");
-        }
-
         restoreHoverViewAlphaValue();
 
         mFloatingTab.removeOnLayoutChangeListener(mOnLayoutChangeListener);
@@ -180,14 +143,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
         mHoverView.mScreen.getExitView().setVisibility(GONE);
 
-        mHasControl = false;
         mIsDocked = false;
         deactivateDragger();
         mDragListener = null;
         mFloatingTab = null;
-
-        mHoverView.setState(nextState);
-        mHoverView = null;
+        super.giveUpControl(nextState);
     }
 
     @Override
@@ -196,7 +156,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
         // If the menu is null or empty then we can't be collapsed, close the menu.
         if (null == menu || menu.getSectionCount() == 0) {
-            close();
+            mHoverView.close();
             return;
         }
 
@@ -284,7 +244,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         boolean droppedOnExit = mHoverView.mScreen.getExitView().isInExitZone(mFloatingTab.getPosition());
         if (droppedOnExit) {
             Log.d(TAG, "User dropped floating tab on exit.");
-            close();
+            mHoverView.close();
         } else {
             int tabSize = mHoverView.getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
             Point screenSize = new Point(mHoverView.mScreen.getWidth(), mHoverView.mScreen.getHeight());
@@ -314,7 +274,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
     private void onTap() {
         Log.d(TAG, "Floating tab was tapped.");
-        expand();
+        mHoverView.expand();
         if (null != mListener) {
             mListener.onTap();
         }
@@ -327,7 +287,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mFloatingTab.dock(new Runnable() {
             @Override
             public void run() {
-                if (!mHasControl) {
+                if (!hasControl()) {
                     return;
                 }
                 onDocked();

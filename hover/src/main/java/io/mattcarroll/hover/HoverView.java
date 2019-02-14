@@ -26,6 +26,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.ViewConfiguration;
+import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import java.util.Set;
@@ -90,14 +91,13 @@ public class HoverView extends RelativeLayout {
     final WindowViewController mWindowViewController;
     final Dragger mDragger;
     final Screen mScreen;
-    HoverViewState mState;
+    private HoverViewState mState;
     HoverMenu mMenu;
     HoverMenu.SectionId mSelectedSectionId;
     SideDock mCollapsedDock;
     boolean mIsAddedToWindow;
     boolean mIsTouchableInWindow;
     boolean mIsDebugMode = false;
-    boolean mUseShadeView = true;
     int mTabSize;
     OnExitListener mOnExitListener;
     final Set<OnStateChangeListener> mOnStateChangeListeners = new CopyOnWriteArraySet<>();
@@ -171,7 +171,7 @@ public class HoverView extends RelativeLayout {
         mTabSize = getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
         restoreVisualState();
         setFocusableInTouchMode(true); // For handling hardware back button presses.
-        setState(new HoverViewStateClosed());
+        close();
     }
 
     @Override
@@ -244,9 +244,16 @@ public class HoverView extends RelativeLayout {
         mScreen.enableDrugMode(debugMode);
     }
 
-    void setState(@NonNull HoverViewState state) {
-        mState = state;
+    void setState(@NonNull HoverViewState newState) {
+        if (mState != null) {
+            mState.giveUpControl(newState);
+        }
+        mState = newState;
         mState.takeControl(this);
+    }
+
+    public HoverViewState getState() {
+        return mState;
     }
 
     private void onBackPressed() {
@@ -258,27 +265,21 @@ public class HoverView extends RelativeLayout {
     }
 
     public void preview() {
-        mState.preview();
+        setState(mPreviewed);
     }
 
     public void expand() {
-        mState.expand();
+        setState(mExpanded);
     }
 
     public void collapse() {
-        mState.collapse();
+        setState(mCollapsed);
     }
 
     public void close() {
-        mState.close();
+        setState(mClosed);
     }
 
-    public void setUseShadeView(final boolean useShadeView) {
-        mUseShadeView = useShadeView;
-    }
-
-    public boolean useShadeView() {
-        return mUseShadeView;
     }
 
     public void setOnExitListener(@Nullable OnExitListener listener) {
@@ -349,20 +350,44 @@ public class HoverView extends RelativeLayout {
 
     // Only call this if using HoverMenuView directly in a window.
     public void addToWindow() {
-        mState.addToWindow();
+        if (!mIsAddedToWindow) {
+            mWindowViewController.addView(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    false,
+                    this
+            );
+
+            mIsAddedToWindow = true;
+
+            if (mIsTouchableInWindow) {
+                makeTouchableInWindow();
+            } else {
+                makeUntouchableInWindow();
+            }
+        }
     }
 
     // Only call this if using HoverMenuView directly in a window.
     public void removeFromWindow() {
-        mState.removeFromWindow();
+        if (mIsAddedToWindow) {
+            mWindowViewController.removeView(this);
+            mIsAddedToWindow = false;
+        }
     }
 
     void makeTouchableInWindow() {
-        mState.makeTouchableInWindow();
+        mIsTouchableInWindow = true;
+        if (mIsAddedToWindow) {
+            mWindowViewController.makeTouchable(this);
+        }
     }
 
     void makeUntouchableInWindow() {
-        mState.makeUntouchableInWindow();
+        mIsTouchableInWindow = false;
+        if (mIsAddedToWindow) {
+            mWindowViewController.makeUntouchable(this);
+        }
     }
 
     // State of the HoverMenuView that is persisted across configuration change and other brief OS

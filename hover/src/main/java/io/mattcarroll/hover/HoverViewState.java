@@ -29,22 +29,7 @@ interface HoverViewState {
      */
     void takeControl(@NonNull HoverView hoverView);
 
-    void preview();
-
-    /**
-     * Expands the HoverView.
-     */
-    void expand();
-
-    /**
-     * Collapses the HoverView.
-     */
-    void collapse();
-
-    /**
-     * Closes the HoverView (no menu or tabs are visible).
-     */
-    void close();
+    void giveUpControl(@NonNull HoverViewState nextState);
 
     /**
      * Displays the given {@code menu} within the HoverView.
@@ -63,26 +48,4 @@ interface HoverViewState {
      * {@link #respondsToBackButton()} returns true.
      */
     void onBackPressed();
-
-    /**
-     * Adds the HoverView to the Android device's Window.
-     */
-    void addToWindow();
-
-    /**
-     * Removes the HoverView from the Android device's Window.
-     */
-    void removeFromWindow();
-
-    /**
-     * Assuming that the HoverView is added to the Android device's Window, makes the HoverView
-     * touchable.
-     */
-    void makeTouchableInWindow();
-
-    /**
-     * Assuming that the HoverView is added to the Android device's Window, makes the HoverView
-     * untouchable (touch events pass through the overlay to whatever is beneath).
-     */
-    void makeUntouchableInWindow();
 }
