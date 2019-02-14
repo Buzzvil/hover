@@ -78,8 +78,8 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     public void takeControl(@NonNull HoverView hoverView) {
         super.takeControl(hoverView);
         Log.d(TAG, "Taking control.");
-        mHoverView.clearFocus(); // For handling hardware back button presses.
         mHoverView.makeUntouchableInWindow();
+        mHoverView.clearFocus(); // For handling hardware back button presses.
 
         Log.d(TAG, "Taking control with selected section: " + mHoverView.mSelectedSectionId);
         mSelectedSection = mHoverView.mMenu.getSection(mHoverView.mSelectedSectionId);
@@ -96,7 +96,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mDragListener = new FloatingTabDragListener(this);
         mIsCollapsed = false; // We're collapsing, not yet collapsed.
         if (null != mListener) {
-            mHoverView.notifyListenersCollapsing();
             mListener.onCollapsing();
         }
         initDockPosition();
@@ -152,20 +151,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
     @Override
     public void setMenu(@Nullable final HoverMenu menu) {
-        mHoverView.mMenu = menu;
-
-        // If the menu is null or empty then we can't be collapsed, close the menu.
-        if (null == menu || menu.getSectionCount() == 0) {
-            mHoverView.close();
-            return;
-        }
-
-        mHoverView.restoreVisualState();
-
-        if (null == mHoverView.mSelectedSectionId || null == mHoverView.mMenu.getSection(mHoverView.mSelectedSectionId)) {
-            mHoverView.mSelectedSectionId = mHoverView.mMenu.getSection(0).getId();
-        }
-
         listenForMenuChanges();
     }
 

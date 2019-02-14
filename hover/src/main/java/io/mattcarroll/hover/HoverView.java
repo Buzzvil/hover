@@ -88,6 +88,7 @@ public class HoverView extends RelativeLayout {
     final HoverViewState mCollapsed = new HoverViewStateCollapsed();
     final HoverViewState mPreviewed = new HoverViewStatePreviewed();
     final HoverViewState mExpanded = new HoverViewStateExpanded();
+    final HoverViewState mAnchored = new HoverViewStateAnchored();
     final WindowViewController mWindowViewController;
     final Dragger mDragger;
     final Screen mScreen;
@@ -245,11 +246,13 @@ public class HoverView extends RelativeLayout {
     }
 
     void setState(@NonNull HoverViewState newState) {
-        if (mState != null) {
-            mState.giveUpControl(newState);
+        if (mState != newState) {
+            if (mState != null) {
+                mState.giveUpControl(newState);
+            }
+            mState = newState;
+            mState.takeControl(this);
         }
-        mState = newState;
-        mState.takeControl(this);
     }
 
     public HoverViewState getState() {
@@ -261,6 +264,17 @@ public class HoverView extends RelativeLayout {
     }
 
     public void setMenu(@Nullable HoverMenu menu) {
+        mMenu = menu;
+        // If the menu is null or empty then close the menu.
+        if (null == menu || menu.getSectionCount() == 0) {
+            close();
+            return;
+        }
+        restoreVisualState();
+
+        if (null == mSelectedSectionId || null == mMenu.getSection(mSelectedSectionId)) {
+            mSelectedSectionId = mMenu.getSection(0).getId();
+        }
         mState.setMenu(menu);
     }
 
@@ -280,6 +294,8 @@ public class HoverView extends RelativeLayout {
         setState(mClosed);
     }
 
+    public void anchor() {
+        setState(mAnchored);
     }
 
     public void setOnExitListener(@Nullable OnExitListener listener) {
@@ -294,24 +310,10 @@ public class HoverView extends RelativeLayout {
         mOnStateChangeListeners.remove(onStateChangeListener);
     }
 
-    void notifyListenersExpanding() {
-        Log.d(TAG, "Notifying listeners that Hover is expanding.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onExpanding();
-        }
-    }
-
     void notifyListenersExpanded() {
         Log.d(TAG, "Notifying listeners that Hover is now expanded.");
         for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
             onStateChangeListener.onExpanded();
-        }
-    }
-
-    void notifyListenersCollapsing() {
-        Log.d(TAG, "Notifying listeners that Hover is collapsing.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onCollapsing();
         }
     }
 
@@ -322,22 +324,9 @@ public class HoverView extends RelativeLayout {
         }
     }
 
-    void notifyListenersPreviewing() {
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onPreviewing();
-        }
-    }
-
     void notifyListenersPreviewed() {
         for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
             onStateChangeListener.onPreviewed();
-        }
-    }
-
-    void notifyListenersClosing() {
-        Log.d(TAG, "Notifying listeners that Hover is closing.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onClosing();
         }
     }
 
@@ -345,6 +334,13 @@ public class HoverView extends RelativeLayout {
         Log.d(TAG, "Notifying listeners that Hover is closed.");
         for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
             onStateChangeListener.onClosed();
+        }
+    }
+
+    void notifyListenersAnchored() {
+        Log.d(TAG, "Notifying listeners that Hover is closing.");
+        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+            onStateChangeListener.onAnchored();
         }
     }
 
@@ -551,63 +547,36 @@ public class HoverView extends RelativeLayout {
      * Listener invoked when the corresponding transitions occur within a given {@link HoverView}.
      */
     public interface OnStateChangeListener {
-
-        void onExpanding();
-
         void onExpanded();
-
-        void onCollapsing();
 
         void onCollapsed();
 
-        void onPreviewing();
-
         void onPreviewed();
 
-        void onClosing();
-
         void onClosed();
+
+        void onAnchored();
     }
 
     public static class DefaultOnStateChangeListener implements OnStateChangeListener {
         @Override
-        public void onExpanding() {
-
-        }
-
-        @Override
         public void onExpanded() {
-
-        }
-
-        @Override
-        public void onCollapsing() {
-
         }
 
         @Override
         public void onCollapsed() {
-
-        }
-
-        @Override
-        public void onPreviewing() {
-
         }
 
         @Override
         public void onPreviewed() {
-
-        }
-
-        @Override
-        public void onClosing() {
-
         }
 
         @Override
         public void onClosed() {
+        }
 
+        @Override
+        public void onAnchored() {
         }
     }
 }

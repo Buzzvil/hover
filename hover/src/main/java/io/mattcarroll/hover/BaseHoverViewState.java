@@ -15,7 +15,9 @@
  */
 package io.mattcarroll.hover;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 /**
  * {@link HoverViewState} that includes behavior common to all implementations.
@@ -25,6 +27,7 @@ abstract class BaseHoverViewState implements HoverViewState {
     private boolean mHasControl = false;
     protected HoverView mHoverView;
 
+    @CallSuper
     @Override
     public void takeControl(@NonNull HoverView hoverView) {
         if (mHasControl) {
@@ -34,6 +37,7 @@ abstract class BaseHoverViewState implements HoverViewState {
         mHoverView = hoverView;
     }
 
+    @CallSuper
     @Override
     public void giveUpControl(@NonNull HoverViewState nextState) {
         if (!mHasControl) {
@@ -43,7 +47,11 @@ abstract class BaseHoverViewState implements HoverViewState {
         mHoverView = null;
     }
 
-    protected boolean hasControl() {
+    protected final boolean hasControl() {
         return mHasControl;
+    }
+
+    @Override
+    public void setMenu(@Nullable HoverMenu menu) {
     }
 }

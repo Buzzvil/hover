@@ -99,8 +99,6 @@ class HoverViewStateExpanded extends BaseHoverViewState {
         } else {
             mSelectedTab.dock(mShowTabsRunnable);
         }
-
-        mHoverView.notifyListenersExpanding();
     }
 
     private void createChainedTabs() {
@@ -238,20 +236,6 @@ class HoverViewStateExpanded extends BaseHoverViewState {
     @Override
     public void setMenu(@Nullable HoverMenu menu) {
         Log.d(TAG, "Setting menu.");
-        mHoverView.mMenu = menu;
-
-        // Expanded menus can't be null/empty.  If it is then go to closed state.
-        if (null == mHoverView.mMenu || mHoverView.mMenu.getSectionCount() == 0) {
-            mHoverView.close();
-            return;
-        }
-
-        mHoverView.restoreVisualState();
-
-        if (null == mHoverView.mSelectedSectionId || null == mHoverView.mMenu.getSection(mHoverView.mSelectedSectionId)) {
-            mHoverView.mSelectedSectionId = mHoverView.mMenu.getSection(0).getId();
-        }
-
         mHoverView.mMenu.setUpdatedCallback(new ListUpdateCallback() {
             @Override
             public void onInserted(int position, int count) {

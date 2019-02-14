@@ -18,6 +18,7 @@ package io.mattcarroll.hover;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * {@link HoverViewState} that operates the {@link HoverView} when it is closed. Closed means that
@@ -32,7 +33,7 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     @Override
     public void takeControl(@NonNull HoverView hoverView) {
         super.takeControl(hoverView);
-        mHoverView.notifyListenersPreviewing();
+        Log.d(TAG, "Taking control.");
         mMessageView = mHoverView.mScreen.getTabMessageView(mHoverView.mSelectedSectionId);
         mMessageView.appear(mHoverView.mCollapsedDock, new Runnable() {
             @Override
@@ -44,6 +45,7 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
 
     @Override
     public void giveUpControl(@NonNull final HoverViewState nextState) {
+        Log.d(TAG, "Giving up control.");
         if (nextState instanceof HoverViewStateCollapsed) {
             mMessageView.disappear(true);
         } else {

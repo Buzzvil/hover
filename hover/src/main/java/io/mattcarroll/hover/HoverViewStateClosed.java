@@ -16,7 +16,6 @@
 package io.mattcarroll.hover;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 /**
@@ -32,7 +31,7 @@ class HoverViewStateClosed extends BaseHoverViewState {
     public void takeControl(@NonNull HoverView hoverView) {
         super.takeControl(hoverView);
         Log.d(TAG, "Taking control.");
-        mHoverView.notifyListenersClosing();
+        mHoverView.makeUntouchableInWindow();
         mHoverView.clearFocus();
 
         final FloatingTab selectedTab = mHoverView.mScreen.getChainedTab(mHoverView.mSelectedSectionId);
@@ -53,24 +52,6 @@ class HoverViewStateClosed extends BaseHoverViewState {
         } else {
             mHoverView.notifyListenersClosed();
         }
-
-        mHoverView.makeUntouchableInWindow();
-    }
-
-    @Override
-    public void setMenu(@Nullable final HoverMenu menu) {
-        mHoverView.mMenu = menu;
-
-        // If the menu is null then there is nothing to restore.
-        if (null == menu) {
-            return;
-        }
-
-        mHoverView.restoreVisualState();
-
-        if (null == mHoverView.mSelectedSectionId || null == mHoverView.mMenu.getSection(mHoverView.mSelectedSectionId)) {
-            mHoverView.mSelectedSectionId = mHoverView.mMenu.getSection(0).getId();
-        }
     }
 
     @Override
@@ -81,5 +62,11 @@ class HoverViewStateClosed extends BaseHoverViewState {
     @Override
     public void onBackPressed() {
         // No-op
+    }
+
+    @Override
+    public void giveUpControl(@NonNull HoverViewState nextState) {
+        Log.d(TAG, "Giving up control.");
+        super.giveUpControl(nextState);
     }
 }
