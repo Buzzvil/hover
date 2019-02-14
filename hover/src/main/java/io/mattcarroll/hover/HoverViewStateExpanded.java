@@ -50,7 +50,6 @@ class HoverViewStateExpanded extends BaseHoverViewState {
     private final List<TabChain> mTabChains = new ArrayList<>();
     private final Map<FloatingTab, HoverMenu.Section> mSections = new HashMap<>();
     private Point mDock;
-    private Listener mListener;
     private int mTabsToUnchainCount;
 
     private final Runnable mShowTabsRunnable = new Runnable() {
@@ -65,13 +64,8 @@ class HoverViewStateExpanded extends BaseHoverViewState {
                     ? mHoverView.mMenu.getSection(mHoverView.mSelectedSectionId)
                     : mHoverView.mMenu.getSection(0);
             mHoverView.mScreen.getContentDisplay().displayContent(selectedSection.getContent());
-
             mHoverView.mScreen.getContentDisplay().setVisibility(View.VISIBLE);
-
             mHoverView.notifyListenersExpanded();
-            if (null != mListener) {
-                mListener.onExpanded();
-            }
         }
     };
 
@@ -107,9 +101,6 @@ class HoverViewStateExpanded extends BaseHoverViewState {
         }
 
         mHoverView.notifyListenersExpanding();
-        if (null != mListener) {
-            mListener.onExpanding();
-        }
     }
 
     private void createChainedTabs() {
@@ -479,19 +470,5 @@ class HoverViewStateExpanded extends BaseHoverViewState {
         ContentDisplay contentDisplay = mHoverView.mScreen.getContentDisplay();
         contentDisplay.selectedTabIs(mSelectedTab);
         contentDisplay.displayContent(section.getContent());
-    }
-
-    // TODO: do we need this?
-    public void setListener(@NonNull Listener listener) {
-        mListener = listener;
-    }
-
-    public interface Listener {
-        void onExpanding();
-
-        void onExpanded();
-
-        // TODO: do we need this?
-        void onCollapseRequested();
     }
 }
