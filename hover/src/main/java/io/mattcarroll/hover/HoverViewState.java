@@ -26,8 +26,9 @@ interface HoverViewState {
     /**
      * Activates this state.
      * @param hoverView hoverView
+     * @param onStateChanged Runnable to be run after state has changed
      */
-    void takeControl(@NonNull HoverView hoverView);
+    void takeControl(@NonNull HoverView hoverView, Runnable onStateChanged);
 
     void giveUpControl(@NonNull HoverViewState nextState);
 

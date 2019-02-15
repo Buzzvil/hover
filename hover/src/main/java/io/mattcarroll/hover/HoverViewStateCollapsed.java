@@ -45,11 +45,11 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private static final long ALPHA_IDLE_MILLIS = 5000;
 
     protected FloatingTab mFloatingTab;
+    protected final Dragger.DragListener mDragListener = new FloatingTabDragListener(this);
     private HoverMenu.Section mSelectedSection;
     private int mSelectedSectionIndex = -1;
     private boolean mIsCollapsed = false;
     private boolean mIsDocked = false;
-    protected Dragger.DragListener mDragListener;
     private Handler mHandler = new Handler();
     private Runnable mAlphaChanger = new Runnable() {
         @Override
@@ -60,6 +60,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
             }
         }
     };
+    private Runnable mOnStateChanged;
 
     private final View.OnLayoutChangeListener mOnLayoutChangeListener = new View.OnLayoutChangeListener() {
         @Override
@@ -74,9 +75,10 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     };
 
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
-        super.takeControl(hoverView);
+    public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
+        super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
+        mOnStateChanged = onStateChanged;
         mHoverView.makeUntouchableInWindow();
         mHoverView.clearFocus(); // For handling hardware back button presses.
 
@@ -92,7 +94,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         } else {
             wasFloatingTabVisible = true;
         }
-        mDragListener = new FloatingTabDragListener(this);
         mIsCollapsed = false; // We're collapsing, not yet collapsed.
         initDockPosition();
 
@@ -140,7 +141,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
         mIsDocked = false;
         deactivateDragger();
-        mDragListener = null;
         mFloatingTab = null;
         super.giveUpControl(nextState);
     }
@@ -207,6 +207,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mIsDocked = false;
         mHoverView.mScreen.getExitView().setVisibility(VISIBLE);
         restoreHoverViewAlphaValue();
+        mHoverView.notifyOnDragStart();
     }
 
     private void onDroppedByUser() {
@@ -244,8 +245,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
 
     private void onTap() {
         Log.d(TAG, "Floating tab was tapped.");
-//        mHoverView.expand();
-        mHoverView.anchor();
+        mHoverView.notifyOnTap();
     }
 
     private void sendToDock() {
@@ -294,8 +294,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         mIsCollapsed = true;
         mHoverView.saveVisualState();
         if (didJustCollapse) {
-            mHoverView.notifyListenersCollapsed();
+            mOnStateChanged.run();
         }
+        mHoverView.notifyOnDocked();
     }
 
     protected void moveTabTo(@NonNull Point position) {

@@ -29,7 +29,7 @@ abstract class BaseHoverViewState implements HoverViewState {
 
     @CallSuper
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
+    public void takeControl(@NonNull HoverView hoverView, Runnable onStateChanged) {
         if (mHasControl) {
             throw new RuntimeException("Cannot take control of a FloatingTab when we already control one.");
         }

@@ -28,8 +28,8 @@ class HoverViewStateClosed extends BaseHoverViewState {
     private static final String TAG = "HoverViewStateClosed";
 
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
-        super.takeControl(hoverView);
+    public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
+        super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
         mHoverView.makeUntouchableInWindow();
         mHoverView.clearFocus();
@@ -46,11 +46,11 @@ class HoverViewStateClosed extends BaseHoverViewState {
                     if (null != mHoverView.mOnExitListener) {
                         mHoverView.mOnExitListener.onExit();
                     }
-                    mHoverView.notifyListenersClosed();
+                    onStateChanged.run();
                 }
             });
         } else {
-            mHoverView.notifyListenersClosed();
+            onStateChanged.run();
         }
     }
 

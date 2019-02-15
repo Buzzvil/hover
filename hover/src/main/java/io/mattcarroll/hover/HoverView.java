@@ -84,11 +84,11 @@ public class HoverView extends RelativeLayout {
         return new HoverView(context, null);
     }
 
-    final HoverViewState mClosed = new HoverViewStateClosed();
-    final HoverViewState mCollapsed = new HoverViewStateCollapsed();
-    final HoverViewState mPreviewed = new HoverViewStatePreviewed();
-    final HoverViewState mExpanded = new HoverViewStateExpanded();
-    final HoverViewState mAnchored = new HoverViewStateAnchored();
+    private final HoverViewState mClosed = new HoverViewStateClosed();
+    private final HoverViewState mCollapsed = new HoverViewStateCollapsed();
+    private final HoverViewState mPreviewed = new HoverViewStatePreviewed();
+    private final HoverViewState mExpanded = new HoverViewStateExpanded();
+    private final HoverViewState mAnchored = new HoverViewStateAnchored();
     final WindowViewController mWindowViewController;
     final Dragger mDragger;
     final Screen mScreen;
@@ -101,7 +101,8 @@ public class HoverView extends RelativeLayout {
     boolean mIsDebugMode = false;
     int mTabSize;
     OnExitListener mOnExitListener;
-    final Set<OnStateChangeListener> mOnStateChangeListeners = new CopyOnWriteArraySet<>();
+    private final Set<OnStateChangeListener> mOnStateChangeListeners = new CopyOnWriteArraySet<>();
+    private final Set<OnInteractionListener> mOnInteractionListeners = new CopyOnWriteArraySet<>();
 
     // Public for use with XML inflation. Clients should use static methods for construction.
     public HoverView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -245,13 +246,13 @@ public class HoverView extends RelativeLayout {
         mScreen.enableDrugMode(debugMode);
     }
 
-    void setState(@NonNull HoverViewState newState) {
+    void setState(@NonNull HoverViewState newState, Runnable onStateChanged) {
         if (mState != newState) {
             if (mState != null) {
                 mState.giveUpControl(newState);
             }
             mState = newState;
-            mState.takeControl(this);
+            mState.takeControl(this, onStateChanged);
         }
     }
 
@@ -279,23 +280,58 @@ public class HoverView extends RelativeLayout {
     }
 
     public void preview() {
-        setState(mPreviewed);
+        setState(mPreviewed, new Runnable() {
+            @Override
+            public void run() {
+                for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+                    onStateChangeListener.onPreviewed();
+                }
+            }
+        });
     }
 
     public void expand() {
-        setState(mExpanded);
+        setState(mExpanded, new Runnable() {
+            @Override
+            public void run() {
+                for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+                    onStateChangeListener.onExpanded();
+                }
+            }
+        });
     }
 
     public void collapse() {
-        setState(mCollapsed);
+        setState(mCollapsed, new Runnable() {
+            @Override
+            public void run() {
+                for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+                    onStateChangeListener.onCollapsed();
+                }
+            }
+        });
     }
 
     public void close() {
-        setState(mClosed);
+        setState(mClosed, new Runnable() {
+            @Override
+            public void run() {
+                for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+                    onStateChangeListener.onClosed();
+                }
+            }
+        });
     }
 
     public void anchor() {
-        setState(mAnchored);
+        setState(mAnchored, new Runnable() {
+            @Override
+            public void run() {
+                for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
+                    onStateChangeListener.onAnchored();
+                }
+            }
+        });
     }
 
     public void setOnExitListener(@Nullable OnExitListener listener) {
@@ -310,37 +346,29 @@ public class HoverView extends RelativeLayout {
         mOnStateChangeListeners.remove(onStateChangeListener);
     }
 
-    void notifyListenersExpanded() {
-        Log.d(TAG, "Notifying listeners that Hover is now expanded.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onExpanded();
+    public void addOnInteractionListener(@NonNull OnInteractionListener onInteractionListener) {
+        mOnInteractionListeners.add(onInteractionListener);
+    }
+
+    public void removeOnInteractionListener(@NonNull OnInteractionListener onInteractionListener) {
+        mOnInteractionListeners.remove(onInteractionListener);
+    }
+
+    void notifyOnTap() {
+        for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
+            onInteractionListener.onTap();
         }
     }
 
-    void notifyListenersCollapsed() {
-        Log.d(TAG, "Notifying listeners that Hover is now collapsed.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onCollapsed();
+    void notifyOnDragStart() {
+        for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
+            onInteractionListener.onDragStart();
         }
     }
 
-    void notifyListenersPreviewed() {
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onPreviewed();
-        }
-    }
-
-    void notifyListenersClosed() {
-        Log.d(TAG, "Notifying listeners that Hover is closed.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onClosed();
-        }
-    }
-
-    void notifyListenersAnchored() {
-        Log.d(TAG, "Notifying listeners that Hover is closing.");
-        for (OnStateChangeListener onStateChangeListener : mOnStateChangeListeners) {
-            onStateChangeListener.onAnchored();
+    void notifyOnDocked() {
+        for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
+            onInteractionListener.onDocked();
         }
     }
 
@@ -578,5 +606,13 @@ public class HoverView extends RelativeLayout {
         @Override
         public void onAnchored() {
         }
+    }
+
+    public interface OnInteractionListener {
+        void onTap();
+
+        void onDragStart();
+
+        void onDocked();
     }
 }

@@ -14,8 +14,8 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
     private Point mDock;
 
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
-        super.takeControl(hoverView);
+    public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
+        super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
         mHoverView.makeUntouchableInWindow();
         mHoverView.clearFocus();
@@ -33,7 +33,7 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
                 if (!hasControl()) {
                     return;
                 }
-                mHoverView.notifyListenersAnchored();
+                onStateChanged.run();
             }
         });
     }

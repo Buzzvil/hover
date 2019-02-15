@@ -31,14 +31,14 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     private TabMessageView mMessageView;
 
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
-        super.takeControl(hoverView);
+    public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
+        super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
         mMessageView = mHoverView.mScreen.getTabMessageView(mHoverView.mSelectedSectionId);
         mMessageView.appear(mHoverView.mCollapsedDock, new Runnable() {
             @Override
             public void run() {
-                mHoverView.notifyListenersPreviewed();
+                onStateChanged.run();
             }
         });
     }

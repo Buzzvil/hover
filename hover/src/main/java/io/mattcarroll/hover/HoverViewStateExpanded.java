@@ -51,6 +51,7 @@ class HoverViewStateExpanded extends BaseHoverViewState {
     private final Map<FloatingTab, HoverMenu.Section> mSections = new HashMap<>();
     private Point mDock;
     private int mTabsToUnchainCount;
+    private Runnable mOnStateChanged;
 
     private final Runnable mShowTabsRunnable = new Runnable() {
         @Override
@@ -65,14 +66,15 @@ class HoverViewStateExpanded extends BaseHoverViewState {
                     : mHoverView.mMenu.getSection(0);
             mHoverView.mScreen.getContentDisplay().displayContent(selectedSection.getContent());
             mHoverView.mScreen.getContentDisplay().setVisibility(View.VISIBLE);
-            mHoverView.notifyListenersExpanded();
+            mOnStateChanged.run();
         }
     };
 
     @Override
-    public void takeControl(@NonNull HoverView hoverView) {
-        super.takeControl(hoverView);
+    public void takeControl(@NonNull HoverView hoverView, Runnable onStateChanged) {
+        super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
+        mOnStateChanged = onStateChanged;
         mHoverView.makeTouchableInWindow();
         mHoverView.requestFocus(); // For handling hardware back button presses.
         mDock = new Point(
