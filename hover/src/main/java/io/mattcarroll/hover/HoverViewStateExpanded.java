@@ -59,6 +59,7 @@ class HoverViewStateExpanded extends BaseHoverViewState {
             if (!hasControl()) {
                 return;
             }
+            mHoverView.mScreen.getShadeView().show();
             mHoverView.mScreen.getContentDisplay().selectedTabIs(mSelectedTab);
 
             HoverMenu.Section selectedSection = null != mHoverView.mSelectedSectionId
@@ -183,6 +184,7 @@ class HoverViewStateExpanded extends BaseHoverViewState {
         mHoverView.mScreen.getContentDisplay().selectedTabIs(null);
         mHoverView.mScreen.getContentDisplay().displayContent(null);
         mHoverView.mScreen.getContentDisplay().setVisibility(View.GONE);
+        mHoverView.mScreen.getShadeView().hide();
         unchainTabs(null);
         super.giveUpControl(nextState);
     }

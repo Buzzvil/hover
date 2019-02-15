@@ -38,12 +38,21 @@ class Screen {
     private ViewGroup mContainer;
     private ContentDisplay mContentDisplay;
     private ExitView mExitView;
+    private ShadeView mShadeView;
     private Map<String, FloatingTab> mTabs = new HashMap<>();
     private Map<String, TabMessageView> mTabMessageViews = new HashMap<>();
     private boolean mIsDebugMode = false;
 
     Screen(@NonNull ViewGroup hoverMenuContainer) {
         mContainer = hoverMenuContainer;
+
+        mShadeView = new ShadeView(mContainer.getContext());
+        mContainer.addView(mShadeView, new WindowManager.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        ));
+        mShadeView.hideImmediate();
+
         mExitView = new ExitView(mContainer.getContext());
         mContainer.addView(mExitView, new WindowManager.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -126,6 +135,10 @@ class Screen {
 
     public ExitView getExitView() {
         return mExitView;
+    }
+
+    public ShadeView getShadeView() {
+        return mShadeView;
     }
 
     public TabMessageView getTabMessageView(final HoverMenu.SectionId sectionId) {
