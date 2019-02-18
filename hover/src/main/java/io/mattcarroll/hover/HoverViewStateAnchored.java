@@ -11,7 +11,16 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
 
     private FloatingTab mSelectedTab;
     private HoverMenu.Section mSelectedSection;
-    private Point mDock;
+    private final BaseTouchController.TouchListener mTouchListener = new BaseTouchController.TouchListener() {
+        @Override
+        public void onPress() {
+        }
+
+        @Override
+        public void onTap() {
+            mHoverView.collapse();
+        }
+    };
 
     @Override
     public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
@@ -20,7 +29,7 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
         mHoverView.makeUntouchableInWindow();
         mHoverView.clearFocus();
         final int pointMargin = hoverView.getContext().getResources().getDimensionPixelSize(R.dimen.hover_tab_anchor_margin);
-        mDock = new Point(
+        final Point anchorPoint = new Point(
                 mHoverView.mScreen.getWidth() - pointMargin,
                 mHoverView.mScreen.getHeight() - pointMargin
         );
@@ -33,13 +42,14 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
         if (mSelectedTab == null) {
             mSelectedTab = mHoverView.mScreen.createChainedTab(mSelectedSection);
         }
-        mSelectedTab.setDock(new PositionDock(mDock));
+        mSelectedTab.setDock(new PositionDock(anchorPoint));
         mSelectedTab.dock(new Runnable() {
             @Override
             public void run() {
                 if (!hasControl()) {
                     return;
                 }
+                activateTouchController();
                 onStateChanged.run();
             }
         });
@@ -48,7 +58,18 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
     @Override
     public void giveUpControl(@NonNull HoverViewState nextState) {
         Log.d(TAG, "Giving up control.");
+        deactivateTouchController();
         super.giveUpControl(nextState);
+    }
+
+    private void activateTouchController() {
+        final Rect visibleRect = new Rect();
+        mSelectedTab.getGlobalVisibleRect(visibleRect);
+        mHoverView.mDragger.activate(mTouchListener, visibleRect);
+    }
+
+    private void deactivateTouchController() {
+        mHoverView.mDragger.deactivate();
     }
 
     @Override

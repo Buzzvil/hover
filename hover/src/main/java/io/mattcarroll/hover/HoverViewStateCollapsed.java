@@ -331,9 +331,6 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         }
 
         @Override
-        public void onPress(float x, float y) { }
-
-        @Override
         public void onDragStart(float x, float y) {
             mOwner.onPickedUpByUser();
         }
@@ -346,6 +343,10 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         @Override
         public void onReleasedAt(float x, float y) {
             mOwner.onDroppedByUser();
+        }
+
+        @Override
+        public void onPress() {
         }
 
         @Override
