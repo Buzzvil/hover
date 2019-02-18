@@ -5,7 +5,7 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-public class HoverViewStateAnchored extends BaseHoverViewState {
+class HoverViewStateAnchored extends BaseHoverViewState {
 
     private static final String TAG = "HoverViewStateAnchored";
 
@@ -18,7 +18,7 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
 
         @Override
         public void onTap() {
-            mHoverView.collapse();
+            mHoverView.notifyOnTap(HoverViewStateAnchored.this);
         }
     };
 
@@ -79,5 +79,10 @@ public class HoverViewStateAnchored extends BaseHoverViewState {
 
     @Override
     public void onBackPressed() {
+    }
+
+    @Override
+    public HoverViewStateType getStateType() {
+        return HoverViewStateType.ANCHORED;
     }
 }

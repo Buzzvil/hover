@@ -352,21 +352,21 @@ public class HoverView extends RelativeLayout {
         mOnInteractionListeners.remove(onInteractionListener);
     }
 
-    void notifyOnTap() {
+    void notifyOnTap(HoverViewState state) {
         for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
-            onInteractionListener.onTap();
+            onInteractionListener.onTap(state.getStateType());
         }
     }
 
-    void notifyOnDragStart() {
+    void notifyOnDragStart(HoverViewState state) {
         for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
-            onInteractionListener.onDragStart();
+            onInteractionListener.onDragStart(state.getStateType());
         }
     }
 
-    void notifyOnDocked() {
+    void notifyOnDocked(HoverViewState state) {
         for (OnInteractionListener onInteractionListener : mOnInteractionListeners) {
-            onInteractionListener.onDocked();
+            onInteractionListener.onDocked(state.getStateType());
         }
     }
 
@@ -608,10 +608,10 @@ public class HoverView extends RelativeLayout {
     }
 
     public interface OnInteractionListener {
-        void onTap();
+        void onTap(HoverViewStateType stateType);
 
-        void onDragStart();
+        void onDragStart(HoverViewStateType stateType);
 
-        void onDocked();
+        void onDocked(HoverViewStateType stateType);
     }
 }
