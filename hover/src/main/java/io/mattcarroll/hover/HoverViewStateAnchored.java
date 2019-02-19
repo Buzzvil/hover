@@ -39,6 +39,7 @@ class HoverViewStateAnchored extends BaseHoverViewState {
         }
 
         mSelectedTab.shrink();
+        mSelectedTab.setSelected(true);
         final int anchorMargin = hoverView.getContext().getResources().getDimensionPixelSize(R.dimen.hover_tab_anchor_margin) + (mSelectedTab.getTabSize() / 2);
         final Point anchorPoint = new Point(
                 mHoverView.mScreen.getWidth() - anchorMargin,
@@ -62,6 +63,7 @@ class HoverViewStateAnchored extends BaseHoverViewState {
         Log.d(TAG, "Giving up control.");
         deactivateTouchController();
         mSelectedTab.expand();
+        mSelectedTab.setSelected(false);
         super.giveUpControl(nextState);
     }
 
