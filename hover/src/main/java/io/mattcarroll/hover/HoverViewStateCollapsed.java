@@ -62,7 +62,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     };
     private Runnable mOnStateChanged;
 
-    private final View.OnLayoutChangeListener mOnLayoutChangeListener = new View.OnLayoutChangeListener() {
+    protected final View.OnLayoutChangeListener mOnLayoutChangeListener = new View.OnLayoutChangeListener() {
         @Override
         public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
             if (hasControl() && mIsDocked) {
