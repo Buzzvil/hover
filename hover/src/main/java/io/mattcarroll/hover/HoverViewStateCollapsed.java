@@ -110,9 +110,13 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
                 if (wasFloatingTabVisible) {
                     sendToDock();
                 } else {
-                    mFloatingTab.appear(null);
                     moveToDock();
-                    onDocked();
+                    mFloatingTab.appear(new Runnable() {
+                        @Override
+                        public void run() {
+                            onDocked();
+                        }
+                    });
                 }
             }
         });
