@@ -94,8 +94,8 @@ public abstract class Dragger extends BaseTouchController {
 
     public abstract PointF getTouchViewPosition(@NonNull View touchView);
 
-    public void activate(@NonNull DragListener dragListener, @NonNull Rect rect) {
-        super.activate(dragListener, rect);
+    public void activate(@NonNull DragListener dragListener, @NonNull Rect rect, @NonNull FloatingTab floatingTab) {
+        super.activate(dragListener, rect, floatingTab);
         mDragListener = dragListener;
         mTouchView.setOnTouchListener(mDragTouchListener);
     }
