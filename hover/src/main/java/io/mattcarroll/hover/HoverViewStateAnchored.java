@@ -1,9 +1,11 @@
 package io.mattcarroll.hover;
 
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.View;
+
+import java.util.ArrayList;
 
 class HoverViewStateAnchored extends BaseHoverViewState {
 
@@ -67,9 +69,9 @@ class HoverViewStateAnchored extends BaseHoverViewState {
     }
 
     private void activateTouchController() {
-        final Rect rect = new Rect();
-        mSelectedTab.getDrawingRect(rect);
-        mHoverView.mDragger.activate(mTouchListener, rect, mSelectedTab);
+        final ArrayList<View> list = new ArrayList<>();
+        list.add(mSelectedTab);
+        mHoverView.mDragger.activate(mTouchListener, list);
     }
 
     private void deactivateTouchController() {

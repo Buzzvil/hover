@@ -16,11 +16,12 @@
 package io.mattcarroll.hover;
 
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.List;
 
 /**
  * Reports user drag behavior on the screen to a {@link DragListener}.
@@ -44,7 +45,7 @@ public abstract class Dragger extends BaseTouchController {
                     Log.d(TAG, "ACTION_DOWN");
                     mIsDragging = false;
 
-                    mOriginalViewPosition = convertCornerToCenter(getTouchViewPosition(mTouchView));
+                    mOriginalViewPosition = convertCornerToCenter(view, getTouchViewPosition(view));
                     mCurrentViewPosition = new PointF(mOriginalViewPosition.x, mOriginalViewPosition.y);
                     mOriginalTouchPosition.set(motionEvent.getRawX(), motionEvent.getRawY());
                     mTouchListener.onPress();
@@ -92,10 +93,12 @@ public abstract class Dragger extends BaseTouchController {
 
     public abstract PointF getTouchViewPosition(@NonNull View touchView);
 
-    public void activate(@NonNull DragListener dragListener, @NonNull Rect rect, @NonNull FloatingTab floatingTab) {
-        super.activate(dragListener, rect, floatingTab);
+    public void activate(@NonNull DragListener dragListener, @NonNull List<View> viewList) {
+        super.activate(dragListener, viewList);
         mDragListener = dragListener;
-        mTouchView.setOnTouchListener(mDragTouchListener);
+        for (View touchView : mTouchViewMap.values()) {
+            touchView.setOnTouchListener(mDragTouchListener);
+        }
     }
 
     private boolean isTouchWithinSlopOfOriginalTouch(float dx, float dy) {
@@ -104,17 +107,17 @@ public abstract class Dragger extends BaseTouchController {
         return distance < mTapTouchSlop;
     }
 
-    private PointF convertCornerToCenter(@NonNull PointF cornerPosition) {
+    private PointF convertCornerToCenter(View touchView, @NonNull PointF cornerPosition) {
         return new PointF(
-                cornerPosition.x + (mTouchView.getWidth() / 2f),
-                cornerPosition.y + (mTouchView.getHeight() / 2f)
+                cornerPosition.x + (touchView.getWidth() / 2f),
+                cornerPosition.y + (touchView.getHeight() / 2f)
         );
     }
 
-    private PointF convertCenterToCorner(@NonNull PointF centerPosition) {
+    private PointF convertCenterToCorner(View touchView, @NonNull PointF centerPosition) {
         return new PointF(
-                centerPosition.x - (mTouchView.getWidth() / 2f),
-                centerPosition.y - (mTouchView.getHeight() / 2f)
+                centerPosition.x - (touchView.getWidth() / 2f),
+                centerPosition.y - (touchView.getHeight() / 2f)
         );
     }
 

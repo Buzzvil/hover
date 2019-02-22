@@ -16,13 +16,14 @@
 package io.mattcarroll.hover;
 
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.ListUpdateCallback;
 import android.util.Log;
 import android.view.View;
+
+import java.util.ArrayList;
 
 import static android.view.View.GONE;
 import static android.view.View.INVISIBLE;
@@ -311,9 +312,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     }
 
     protected void activateDragger() {
-        final Rect rect = new Rect();
-        mFloatingTab.getDrawingRect(rect);
-        mHoverView.mDragger.activate(mDragListener, rect, mFloatingTab);
+        ArrayList<View> list = new ArrayList<>();
+        list.add(mFloatingTab);
+        mHoverView.mDragger.activate(mDragListener, list);
     }
 
     protected void deactivateDragger() {
