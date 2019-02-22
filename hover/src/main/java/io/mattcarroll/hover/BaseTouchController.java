@@ -70,7 +70,7 @@ public abstract class BaseTouchController {
                 Rect rect = new Rect();
                 view.getDrawingRect(rect);
                 View touchView = createTouchView(rect);
-                moveTouchViewTo(touchView, new PointF(rect.left, rect.top));
+                moveTouchViewTo(touchView, new PointF(view.getX(), view.getY()));
                 touchView.setOnTouchListener(mDragTouchListener);
                 mTouchViewMap.put(tag, touchView);
                 if (view instanceof HoverFrameLayout) {
