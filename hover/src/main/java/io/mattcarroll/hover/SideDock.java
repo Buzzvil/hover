@@ -45,8 +45,7 @@ public class SideDock extends Dock {
     @NonNull
     @Override
     public Point position() {
-        Point screenSize = new Point(mHoverView.getScreenSize());
-        return mSidePosition.calculateDockPosition(screenSize, mTabSize);
+        return mSidePosition.calculateDockPosition(mHoverView.getScreenSize(), mTabSize);
     }
 
     @NonNull

@@ -114,6 +114,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
                     mFloatingTab.appear(new Runnable() {
                         @Override
                         public void run() {
+                            if (!hasControl()) {
+                                return;
+                            }
                             onDocked();
                         }
                     });
