@@ -39,7 +39,9 @@ public abstract class BaseTouchController {
         @Override
         public void onPositionChange(@NonNull Point position) {
             Log.d(TAG, mFloatingTab + " tab moved to " + position);
-            moveTouchViewTo(mTouchView, new PointF(position));
+            // TODO
+            final int offset = mFloatingTab.getTabSize() / 2;
+            moveTouchViewTo(mTouchView, new PointF(position.x - offset, position.y - offset));
         }
 
         @Override

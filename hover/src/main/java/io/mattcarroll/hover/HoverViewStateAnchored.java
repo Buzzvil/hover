@@ -67,9 +67,9 @@ class HoverViewStateAnchored extends BaseHoverViewState {
     }
 
     private void activateTouchController() {
-        final Rect visibleRect = new Rect();
-        mSelectedTab.getGlobalVisibleRect(visibleRect);
-        mHoverView.mDragger.activate(mTouchListener, visibleRect);
+        final Rect rect = new Rect();
+        mSelectedTab.getDrawingRect(rect);
+        mHoverView.mDragger.activate(mTouchListener, rect, mSelectedTab);
     }
 
     private void deactivateTouchController() {

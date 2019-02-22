@@ -34,11 +34,13 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     public void takeControl(@NonNull HoverView hoverView, final Runnable onStateChanged) {
         super.takeControl(hoverView, onStateChanged);
         Log.d(TAG, "Taking control.");
-        mFloatingTab.removeOnLayoutChangeListener(mOnLayoutChangeListener);
         mMessageView = mHoverView.mScreen.getTabMessageView(mHoverView.mSelectedSectionId);
         mMessageView.appear(mHoverView.mCollapsedDock, new Runnable() {
             @Override
             public void run() {
+                if (!hasControl()) {
+                    return;
+                }
                 onStateChanged.run();
             }
         });
@@ -69,11 +71,10 @@ class HoverViewStatePreviewed extends HoverViewStateCollapsed {
     protected void activateDragger() {
         final Rect tabRect = new Rect();
         final Rect messageRect = new Rect();
-        mFloatingTab.getGlobalVisibleRect(tabRect);
-        mMessageView.getGlobalVisibleRect(messageRect);
+        mFloatingTab.getDrawingRect(tabRect);
+        mMessageView.getDrawingRect(messageRect);
         tabRect.union(messageRect);
-
-        mHoverView.mDragger.activate(mDragListener, tabRect);
+        mHoverView.mDragger.activate(mDragListener, tabRect, mFloatingTab);
     }
 
     @Override

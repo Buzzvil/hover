@@ -311,9 +311,9 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     }
 
     protected void activateDragger() {
-        final Rect visibleRect = new Rect();
-        mFloatingTab.getGlobalVisibleRect(visibleRect);
-        mHoverView.mDragger.activate(mDragListener, visibleRect);
+        final Rect rect = new Rect();
+        mFloatingTab.getDrawingRect(rect);
+        mHoverView.mDragger.activate(mDragListener, rect, mFloatingTab);
     }
 
     protected void deactivateDragger() {

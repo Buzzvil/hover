@@ -65,8 +65,6 @@ public abstract class Dragger extends BaseTouchController {
                             mIsDragging = true;
                             mDragListener.onDragStart(mCurrentViewPosition.x, mCurrentViewPosition.y);
                         } else {
-                            PointF cornerPosition = convertCenterToCorner(mCurrentViewPosition);
-                            moveTouchViewTo(mTouchView, cornerPosition);
                             mDragListener.onDragTo(mCurrentViewPosition.x, mCurrentViewPosition.y);
                         }
                     }
