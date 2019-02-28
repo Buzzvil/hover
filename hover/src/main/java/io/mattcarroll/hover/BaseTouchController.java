@@ -72,6 +72,7 @@ public abstract class BaseTouchController {
                 View touchView = createTouchView(rect);
                 moveTouchViewTo(touchView, new PointF(view.getX(), view.getY()));
                 touchView.setOnTouchListener(mDragTouchListener);
+                touchView.setTag(tag);
                 mTouchViewMap.put(tag, touchView);
                 if (view instanceof HoverFrameLayout) {
                     ((HoverFrameLayout) view).addOnPositionChangeListener(mOnLayoutChangeListener);
