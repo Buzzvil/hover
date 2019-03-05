@@ -205,12 +205,13 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
         } else {
             int tabSize = mHoverView.getResources().getDimensionPixelSize(R.dimen.hover_tab_size);
             Point screenSize = mHoverView.getScreenSize();
-            float tabHorizontalPositionPercent = (float) mFloatingTab.getPosition().x / screenSize.x;
+            final float tabHorizontalPositionPercent = (float) mFloatingTab.getPosition().x / screenSize.x;
+            final float viewHeightPercent = mFloatingTab.getHeight() / 2f / screenSize.y;
             float tabVerticalPosition = (float) mFloatingTab.getPosition().y / screenSize.y;
             if (tabVerticalPosition < MIN_TAB_VERTICAL_POSITION) {
                 tabVerticalPosition = MIN_TAB_VERTICAL_POSITION;
-            } else if (tabVerticalPosition > MAX_TAB_VERTICAL_POSITION) {
-                tabVerticalPosition = MAX_TAB_VERTICAL_POSITION;
+            } else if (tabVerticalPosition > MAX_TAB_VERTICAL_POSITION - viewHeightPercent) {
+                tabVerticalPosition = MAX_TAB_VERTICAL_POSITION - viewHeightPercent;
             }
             Log.d(TAG, "Dropped at horizontal " + tabHorizontalPositionPercent + ", vertical " + tabVerticalPosition);
             SideDock.SidePosition sidePosition = new SideDock.SidePosition(

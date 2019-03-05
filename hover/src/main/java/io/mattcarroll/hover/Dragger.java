@@ -15,6 +15,7 @@
  */
 package io.mattcarroll.hover;
 
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -92,6 +93,8 @@ public abstract class Dragger extends BaseTouchController {
     }
 
     public abstract PointF getTouchViewPosition(@NonNull View touchView);
+
+    public abstract Point getContainerSize();
 
     public void activate(@NonNull DragListener dragListener, @NonNull List<View> viewList) {
         super.activate(dragListener, viewList);
