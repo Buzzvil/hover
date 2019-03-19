@@ -52,8 +52,6 @@ class HoverViewStateHidden extends BaseHoverViewState {
                     public void run() {
                         if (mHoverView != null) {
                             mHoverView.setVisibility(View.GONE);
-                        } else {
-                            Log.e("Hidden", "HoverView is NULL!!!!!!!!");
                         }
                     }
                 }, 50);
