@@ -44,6 +44,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
     private static final float MIN_TAB_VERTICAL_POSITION = 0.0f;
     private static final float MAX_TAB_VERTICAL_POSITION = 1.0f;
     private static final long ALPHA_IDLE_MILLIS = 5000;
+    private static final float ALPHA_IDLE_VALUE = 0.4f;
 
     protected FloatingTab mFloatingTab;
     protected final Dragger.DragListener mDragListener = new FloatingTabDragListener(this);
@@ -57,7 +58,7 @@ class HoverViewStateCollapsed extends BaseHoverViewState {
             final HoverViewState state = mHoverView.getState();
             if (!(state instanceof HoverViewStatePreviewed) && state instanceof HoverViewStateCollapsed) {
                 if (mHoverView.shouldKeepVisible()) {
-                    mHoverView.setAlpha(0.4f);
+                    mHoverView.setAlpha(ALPHA_IDLE_VALUE);
                 } else {
                     mHoverView.close();
                 }
