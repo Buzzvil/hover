@@ -15,10 +15,12 @@
  */
 package io.mattcarroll.hover.window;
 
+import android.content.Context;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,16 +31,48 @@ import android.view.WindowManager;
 public class WindowViewController {
 
     private WindowManager mWindowManager;
+    private Context mContext;
 
-    public WindowViewController(@NonNull WindowManager windowManager) {
+
+    public WindowViewController(@NonNull WindowManager windowManager, Context context) {
         mWindowManager = windowManager;
+        this.mContext = context;
     }
 
     public void addView(int width, int height, boolean isTouchable, @NonNull View view) {
+        Log.d("TRACK_DEBUG", "WindowViewController - addView");
         addViewToWindow(view, buildLayoutParams(width, height, isTouchable));
     }
 
+    // TODO [WITHOUT_PERMISSION] temporary code, implement real logic
+    private int getLayoutParamType() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(mContext)) {
+            return chooseLayoutParamType(WindowManager.LayoutParams.TYPE_TOAST);
+        } else {
+            return chooseLayoutParamType(WindowManager.LayoutParams.TYPE_PHONE);
+        }
+    }
+
+    // TODO [WITHOUT_PERMISSION] temporary code, implement real logic
+    private int chooseLayoutParamType(int typeCandidate) {
+        if (typeCandidate < WindowManager.LayoutParams.TYPE_STATUS_BAR) {
+            return typeCandidate;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (android.provider.Settings.canDrawOverlays(mContext)) {
+                return WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+            }
+            return 2037; /* TYPE_PRESENTATION ??? */
+        } else if (typeCandidate <= 0) {
+            return WindowManager.LayoutParams.TYPE_TOAST;
+        } else {
+            return typeCandidate;
+        }
+    }
+
+    // TODO [WITHOUT_PERMISSION] temporary code, implement real logic
     private WindowManager.LayoutParams buildLayoutParams(final int width, final int height, final boolean isTouchable) {
+        Log.d("TRACK_DEBUG", "WindowViewController - buildLayoutParams");
         // If this view is untouchable then add the corresponding flag, otherwise set to zero which
         // won't have any effect on the OR'ing of flags.
         int touchableFlag = isTouchable ? 0 : WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
@@ -50,10 +84,14 @@ public class WindowViewController {
         WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 width,
                 height,
-                windowType,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS | touchableFlag,
+                getLayoutParamType(),
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                        | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+                        | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED,
                 PixelFormat.TRANSLUCENT
         );
+        params.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 
 
         params.gravity = Gravity.TOP | Gravity.LEFT;

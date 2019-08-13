@@ -37,13 +37,15 @@ public class OverlayPermission {
      */
     public static boolean hasRuntimePermissionToDrawOverlay(@NonNull Context context) {
         //noinspection SimplifiableIfStatement
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            // Runtime permissions are required. Check for the draw overlay permission.
-            return Settings.canDrawOverlays(context);
-        } else {
-            // No runtime permissions required. We're all good.
-            return true;
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            // Runtime permissions are required. Check for the draw overlay permission.
+//            return Settings.canDrawOverlays(context);
+//        } else {
+//            // No runtime permissions required. We're all good.
+//            return true;
+//        }
+        // TODO [WITHOUT_PERMISSION] temporary code, implement real logic
+        return true;
     }
 
     /**

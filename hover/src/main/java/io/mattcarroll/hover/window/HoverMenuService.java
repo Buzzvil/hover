@@ -109,7 +109,7 @@ public abstract class HoverMenuService extends Service {
     private void initHoverMenu(@NonNull Intent intent) {
         mHoverView = HoverView.createForWindow(
                 this,
-                new WindowViewController((WindowManager) getSystemService(Context.WINDOW_SERVICE)),
+                new WindowViewController((WindowManager) getSystemService(Context.WINDOW_SERVICE), getApplicationContext()),
                 new SideDock.SidePosition(SideDock.SidePosition.RIGHT, 0.5f)
         );
         mHoverView.setOnExitListener(mOnMenuOnExitListener);
